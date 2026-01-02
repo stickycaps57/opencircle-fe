@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #29465b;
+  --color-secondary: #cbb799;
+  --color-primary-75: color-mix(in srgb, var(--color-primary) 75%, transparent);
+  --color-herobg: #29465b9e;
+  --color-authlayoutbg: #29465bbf;
+  --color-placeholderbg: #29465b80;
+  --color-athens_gray: #f0f2f5;
+  --color-gainsboro: #dfdfdf;
+  --color-org-prof-bg: #CBB79959
+
+  --radius-56: 56px;
+}
+
+@layer base {
+  body {
+    font-family: "Atkinson Hyperlegible", ui-sans-serif, system-ui;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Atkinson Hyperlegible", ui-sans-serif, system-ui;
+  }
+
+  p {
+    @apply text-sm sm:text-base;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-placeholderbg);
+    @apply text-xs sm:text-sm md:text-base;
+  }
+}
+
+@layer components {
+  /* Responsive Typography Classes */
+
+  .text-responsive-xxs {
+    @apply text-[8px] sm:text-[10px] md:text-[12px] lg:text-[14px];
+  }
+
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm md:text-base lg:text-lg;
+  }
+
+  .text-responsive-sm {
+    @apply text-sm sm:text-base md:text-lg lg:text-xl;
+  }
+
+  .text-responsive-base {
+    @apply text-base sm:text-lg md:text-xl lg:text-2xl;
+  }
+
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl;
+  }
+
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  .text-responsive-2xl {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  /* Responsive Spacing Classes */
+  .spacing-responsive-sm {
+    @apply space-y-2 sm:space-y-3 md:space-y-4;
+  }
+
+  .spacing-responsive-md {
+    @apply space-y-3 sm:space-y-4 md:space-y-6;
+  }
+
+  .spacing-responsive-lg {
+    @apply space-y-4 sm:space-y-6 md:space-y-8;
+  }
+
+  /* Responsive Padding Classes */
+  .padding-responsive-sm {
+    @apply p-2 sm:p-3 md:p-4;
+  }
+
+  .padding-responsive-md {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+
+  .padding-responsive-lg {
+    @apply p-4 sm:p-6 md:p-8;
+  }
+}
+html {
+  scrollbar-gutter: stable;
+}

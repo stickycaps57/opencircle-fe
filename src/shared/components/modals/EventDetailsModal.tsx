@@ -29,6 +29,7 @@ interface EventDetailsModalProps {
   eventId: number;
   userRole?: "member" | "organization";
   currentUserAvatar?: string;
+  isOwner: boolean;
   onEdit?: (eventId: number) => void;
   onDelete?: (eventId: number) => void;
   onJoinOrganization?: (orgId: number) => void;
@@ -48,6 +49,7 @@ export function EventDetailsModal({
   eventId,
   userRole = "member",
   currentUserAvatar = avatarImage,
+  isOwner,
   onEdit,
   onDelete,
   onJoinOrganization,
@@ -61,7 +63,6 @@ export function EventDetailsModal({
   const { formatFriendlyDateTime, formatRelativeTime } = useFormatDate();
   const { user } = useAuthStore();
   const accountUuid = user?.uuid || "";
-  const isOwnProfile = user?.uuid === accountUuid;
   const {
     isConfirmModalOpen,
     modalConfig,
@@ -158,7 +159,7 @@ export function EventDetailsModal({
                   className="w-10 h-10 sm:w-14 sm:h-14"
                   type="organization"
                   organizationId={event.organization_id}
-                  isOwner={isOwnProfile}
+                  isOwner={isOwner}
                   name={event.organization?.name}
                   suffix={
                     <span className="text-authlayoutbg font-normal">

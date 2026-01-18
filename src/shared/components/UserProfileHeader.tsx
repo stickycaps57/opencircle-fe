@@ -192,14 +192,14 @@ export function UserProfileHeader({ profile }: UserProfileHeaderProps) {
         {/* Profile Info */}
         <div className="text-center sm:text-left flex-1 max-w-full sm:max-w-none overflow-hidden w-full">
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 mb-1">
-            <div className="sm:col-span-8 lg:col-span-9 flex justify-center sm:justify-start">
+            <div className="sm:col-span-8 lg:col-span-8 flex justify-center sm:justify-start">
               <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-primary truncate">
                 {getName()}
               </h1>
             </div>
             
             {isMemberVisitingOrganization && (
-              <div className="sm:col-span-4 lg:col-span-3 flex justify-end">
+              <div className="sm:col-span-4 flex justify-end">
                 {(!membershipStatus || membershipStatus === "rejected") && (
                   <PrimaryButton
                     variant="joinStatusButton"
@@ -235,7 +235,7 @@ export function UserProfileHeader({ profile }: UserProfileHeaderProps) {
             )}
 
             {isOrganizationVisitingMember && (
-              <div className="sm:col-span-4 lg:col-span-3 flex justify-end space-x-2">
+              <div className="sm:col-span-4 flex justify-end space-x-2">
                 {userMembershipStatusWithOrganizer === "pending" && (
                   <>
                     <PrimaryButton

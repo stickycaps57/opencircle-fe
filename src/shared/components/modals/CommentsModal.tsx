@@ -244,9 +244,9 @@ export function CommentsModal({
                               className="w-full px-2 sm:px-3 py-1 sm:py-2 bg-white border border-primary rounded-full text-primary text-responsive-xs"
                               autoFocus
                             />
-                            <div className="absolute right-2 top-1 sm:top-2 text-responsive-xs text-primary-75">
+                            {/* <div className="absolute right-2 top-1 sm:top-2 text-responsive-xs text-primary-75">
                               Press Enter to save
-                            </div>
+                            </div> */}
                           </div>
                         ) : (
                           <p className="text-primary text-responsive-xs leading-relaxed">
@@ -263,8 +263,8 @@ export function CommentsModal({
                         onEdit={() => handleEditComment(comment)}
                         onDelete={() => handleDeleteComment(comment.id)}
                         className="ml-2"
-                        editLabel="Edit Comment"
-                        deleteLabel="Delete Comment"
+                        editLabel="Edit"
+                        deleteLabel="Delete"
                       />
                     )}
                   </div>

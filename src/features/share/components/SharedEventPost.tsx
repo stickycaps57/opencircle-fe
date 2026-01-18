@@ -221,6 +221,7 @@ export const SharedEventPost = ({
         eventId={event.id}
         currentUserAvatar={currentAvatar}
         userRole={userRole}
+        isOwner={isOwner}
         onJoinOrganization={onJoinOrganization}
         onCancelJoiningOrganization={onCancelJoiningOrganization}
         onLeaveOrganization={onLeaveOrganization}

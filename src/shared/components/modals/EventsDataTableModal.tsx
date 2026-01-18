@@ -75,7 +75,7 @@ export function EventsDataTableModal({ isOpen, onClose, title = "Events", rows, 
         <button onClick={onClose} className="text-placeholderbg hover:text-primary transition-colors text-responsive-xs">Close</button>
       </div>
 
-      <div className="p-6">
+      <div className="p-3">
         <div className="bg-white rounded-xl border border-gray-100">
           <DataTable
             columns={columns}

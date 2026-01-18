@@ -185,7 +185,7 @@ export default function LoginInterface() {
                 className={`w-full px-3 py-2 border ${
                   errors.login ? "border-red-500" : "border-primary"
                 } rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary`}
-                placeholder="Enter your email"
+                placeholder="Enter your email or username"
                 {...register("login")}
               />
               {errors.login && (

@@ -291,7 +291,8 @@ export const EventActivePost = ({
         currentUserAvatar={currentUserAvatar}
         onViewMoreComments={handleViewMoreComments}
         onViewParticipants={handleViewMoreRequests}
-        participantsCount={event.total_pending_rsvps}
+        participantsCount={event.total_members}
+        participantPendingCount={event.total_pending_rsvps}
         contentId={event.id}
       />
       <LightboxViewer />

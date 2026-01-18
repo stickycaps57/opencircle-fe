@@ -42,6 +42,7 @@ export function CommentsSection({
   contentId,
   contentType = "post", // Default to post for backward compatibility
   participantsCount,
+  participantPendingCount,
   // sharesCount,
 }: CommentsSectionProps) {
   const [error, setError] = useState("");
@@ -50,21 +51,15 @@ export function CommentsSection({
   const [isParticipantsModalOpen, setIsParticipantsModalOpen] = useState(false);
   const { user } = useAuthStore();
   const isUserMember = isMember(user);
-  // const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
-  // const [editingCommentText, setEditingCommentText] = useState("");
-  // const editInputRef = useRef<HTMLInputElement>(null);
-  // const displayedComments = comments.slice(0, 3);
   const hasMoreComments = totalComments > 0;
   const hasParticipants = typeof participantsCount === "number" && participantsCount > 0;
+  const hasPendingRscvp = typeof participantPendingCount === "number" && participantPendingCount > 0;
   const contentTypeNum = contentType === "post" ? 1 : 2;
   const { data: sharesData } = useInfiniteSharesByContent({ content_type: contentTypeNum, content_id: contentId, limit: 10 });
   const sharesInfinite = sharesData as InfiniteData<ShareByContentResponse> | undefined;
   const sharesTotal = sharesInfinite?.pages?.[0]?.pagination?.total || 0;
   const hasShares = sharesTotal > 0;
   const postCommentMutation = usePostComment();
-  // const deleteCommentMutation = useDeleteComment();
-  // const editCommentMutation = useEditComment();
-  // const { formatRelativeTime } = useFormatDate();
 
   const {
     register,
@@ -101,57 +96,6 @@ export function CommentsSection({
     }
   });
 
-  // const { getImageUrl } = useImageUrl();
-
-  // const handleEditComment = (comment: ContentComment) => {
-  //   setEditingCommentId(comment.comment_id);
-  //   setEditingCommentText(comment.message);
-  //   setTimeout(() => {
-  //     if (editInputRef.current) {
-  //       editInputRef.current.focus();
-  //     }
-  //   }, 0);
-  // };
-
-  // const saveEditedComment = async () => {
-  //   if (!editingCommentId) return;
-
-  //   try {
-  //     const editData: EditCommentFormData = {
-  //       comment_id: editingCommentId,
-  //       message: editingCommentText,
-  //     };
-
-  //     await editCommentMutation.mutateAsync(editData);
-  //     setEditingCommentId(null);
-  //     setEditingCommentText("");
-  //   } catch (error) {
-  //     setError(String(error));
-  //   }
-  // };
-
-  // const handleEditKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     saveEditedComment();
-  //   } else if (e.key === "Escape") {
-  //     setEditingCommentId(null);
-  //     setEditingCommentText("");
-  //   }
-  // };
-
-  // const cancelEditing = () => {
-  //   setEditingCommentId(null);
-  //   setEditingCommentText("");
-  // };
-
-  // const handleDeleteComment = async (commentId: number) => {
-  //   try {
-  //     await deleteCommentMutation.mutateAsync(commentId);
-  //   } catch (error) {
-  //     setError(String(error));
-  //   }
-  // };
 
   return (
     <div className="w-full max-w-full px-2 sm:px-3 md:px-4 mt-4">
@@ -195,8 +139,8 @@ export function CommentsSection({
           <div className="flex items-center space-x-2">
             <img src={participantsIcon} alt="Participants" className="w-4 h-4" />
             <PrimaryButton label="Participants" variant="shareButton" onClick={() => setIsParticipantsModalOpen(true)} />
-            {hasParticipants && !isUserMember && (
-              <span className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-secondary text-white text-responsive-xxs">{participantsCount}</span>
+            {hasPendingRscvp && !isUserMember && (
+              <span className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-secondary text-white text-responsive-xxs">{participantPendingCount}</span>
             )}
           </div>
           {isUserMember && (
@@ -220,97 +164,6 @@ export function CommentsSection({
         </div>
       )}
       <hr className="my-4 text-gainsboro" />
-
-      {/* Latest Comment Item */}
-      {/* <div className="space-y-2 sm:space-y-3 md:space-y-4 mb-2 sm:mb-3 md:mb-4">
-        {displayedComments.length > 0 ? (
-          displayedComments.map((comment) => (
-            <div key={comment.comment_id} className="w-full">
-              <div className="bg-athens_gray p-2 sm:p-3 rounded-lg sm:rounded-xl flex justify-between items-start sm:items-center">
-                <div className="flex space-x-2 sm:space-x-3 flex-1">
-                  {comment.user && Object.keys(comment.user).length > 0 ? (
-                    <img
-                      src={getImageUrl(
-                        comment.user.profile_picture,
-                        avatarImage
-                      )}
-                      alt={`${comment.user.first_name} ${comment.user.last_name} avatar`}
-                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
-                      onError={(e) => (e.currentTarget.src = avatarImage)}
-                    />
-                  ) : comment.organization &&
-                    Object.keys(comment.organization).length > 0 ? (
-                    <img
-                      src={getImageUrl(comment.organization.logo)}
-                      alt={`${comment.organization.name} logo`}
-                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
-                      onError={(e) => (e.currentTarget.src = avatarImage)}
-                    />
-                  ) : (
-                    <img
-                      src={avatarImage}
-                      alt="Default avatar"
-                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
-                    />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-primary font-medium text-responsive-xxs mb-1">
-                      {comment.user && Object.keys(comment.user).length > 0
-                        ? `${comment.user.first_name} ${comment.user.last_name}`
-                        : comment.organization &&
-                          Object.keys(comment.organization).length > 0
-                        ? comment.organization.name
-                        : "Unknown"}
-                    </p>
-                    {editingCommentId === comment.comment_id ? (
-                      <div className="relative">
-                        <input
-                          ref={editInputRef}
-                          type="text"
-                          value={editingCommentText}
-                          onChange={(e) =>
-                            setEditingCommentText(e.target.value)
-                          }
-                          onKeyDown={handleEditKeyPress}
-                          onBlur={cancelEditing}
-                          className="w-full px-2 sm:px-3 py-1 sm:py-2 bg-white border border-primary rounded-full text-primary text-responsive-xs"
-                          autoFocus
-                        />
-                        <div className="absolute right-2 top-1 sm:top-2 text-responsive-xs text-primary-75">
-                          Press Enter to save
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-primary text-responsive-xs line-clamp-3">
-                        {comment.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                {checkOwnership({
-                  type: "comment",
-                  accountId: comment.account.id,
-                }) && (
-                  <DropdownMenu
-                    onEdit={() => handleEditComment(comment)}
-                    onDelete={() => handleDeleteComment(comment.comment_id)}
-                    className="ml-2"
-                    editLabel="Edit Comment"
-                    deleteLabel="Delete Comment"
-                  />
-                )}
-              </div>
-              <p className="text-placeholderbg text-responsive-xxs mt-1 ml-2 sm:ml-3">
-                {formatRelativeTime(comment.created_date)}
-              </p>
-            </div>
-          ))
-        ) : (
-          <p className="text-placeholderbg text-responsive-sm text-center py-2 sm:py-3 md:py-4">
-            No comments yet. Be the first to comment!
-          </p>
-        )}
-      </div> */}
 
       {/* Post Comment Form */}
       <form onSubmit={onSubmit} className="flex flex-col py-2 sm:py-3 md:py-4">

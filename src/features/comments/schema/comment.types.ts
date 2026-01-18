@@ -61,6 +61,7 @@ export interface CommentsSectionProps {
   contentId: number;
   contentType: "post" | "event";
   participantsCount?: number;
+  participantPendingCount?: number;
   sharesCount?: number;
 }
 

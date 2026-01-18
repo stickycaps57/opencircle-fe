@@ -1,6 +1,4 @@
 import { useImageUrl, useFormatDate, checkOwnership } from "@src/shared/hooks";
-import { useAuthStore } from "@src/shared/store";
-import { isMember } from "@src/shared/utils";
 import { type AllMemberPostData } from "@src/features/main/member/profile/schema/post.types";
 import { ProfileAvatar } from "@src/shared/components/ProfileAvatar";
 
@@ -15,9 +13,8 @@ export const SharedMemberPost = ({ post }: SharedMemberPostProps) => {
   const isOwner = checkOwnership({ type: "post", ownerId: post.author_id });
   const imageUrls = (post.images || []).map((img) => getImageUrl(img));
 
-  const { user } = useAuthStore();
   const authorImageUrl = getImageUrl(
-    isMember(user) ? post.author_profile_picture ?? post.profile_picture : post.author_logo
+    post.author_profile_picture ?? post.profile_picture ?? post.author_logo ?? post.logo
   );
 
   return (
@@ -55,7 +52,7 @@ export const SharedMemberPost = ({ post }: SharedMemberPostProps) => {
       </div>
 
       {imageUrls.length > 0 && (
-        <div className="grid grid-cols-2 gap-2 mt-4">
+        <div className={`grid ${imageUrls.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-2 mt-4`}>
           {imageUrls.slice(0, 4).map((src, idx) => (
             <div key={idx} className="w-full h-40 sm:h-48 md:h-56 lg:h-[300px] rounded-lg overflow-hidden relative">
               <img src={src} alt={`Post image ${post.id}-${idx + 1}`} className="w-full h-full object-cover" />

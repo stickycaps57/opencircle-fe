@@ -183,6 +183,7 @@ export function CalendarSection(
           onClose={() => setIsModalOpen(false)}
           eventId={selectedEvent.event_id}
           currentUserAvatar={currentAvatar}
+          isOwner={false}
           userRole={
             isMember(user)
               ? "member"

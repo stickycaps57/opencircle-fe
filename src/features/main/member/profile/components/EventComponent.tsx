@@ -126,13 +126,13 @@ export default function EventComponent({ accountUuid }: EventComponentProps) {
   };
 
   // Get user avatar for comments
-  const userAvatar =
-    user && "profile_picture" in user && user.profile_picture
-      ? getImageUrl(
-          user.profile_picture,
-          avatarImage
-        )
-      : avatarImage;
+  const userAvatar = user
+    ? "profile_picture" in user && user.profile_picture
+      ? getImageUrl(user.profile_picture, avatarImage)
+      : "logo" in user && user.logo
+        ? getImageUrl(user.logo, avatarImage)
+        : avatarImage
+    : avatarImage;
 
   const currentAvatar = getImageUrl(
     isMember(user)

@@ -8,6 +8,8 @@ import { useLightbox } from "@src/shared/hooks/useLightbox";
 import { ProfileAvatar } from "@src/shared/components/ProfileAvatar";
 import type { EventData } from "@src/features/main/organization/profile/schema/event.type";
 import { CommentsSection } from "@src/features/comments/ui/CommentsSection";
+import { isMember } from "@src/shared/utils";
+import { useAuthStore } from "@src/shared/store";
 
 interface MemberActiveEventProps {
   event: EventData;
@@ -36,6 +38,8 @@ export const MemberEvents = ({
   const { getImageUrl } = useImageUrl();
   const { openLightbox, LightboxViewer } = useLightbox();
   const isOwner = checkOwnership({ type: "event", ownerId: event.organization?.account_id });
+  const { user } = useAuthStore();
+  const userRole = isMember(user) ? "member" : "organization";
   const isPastEvent = status === "Past";
 
   const handleViewMoreComments = () => {
@@ -69,44 +73,46 @@ export const MemberEvents = ({
           </ProfileAvatar>
         </div>
 
-        <div className="flex items-start space-x-2">
-          {/* Conditional rendering based on membership status */}
-          {/* Show Join Organization button when status is null or rejected */}
-          {(!event.user_membership_status_with_organizer ||
-            event.user_membership_status_with_organizer === "rejected") && (
-            <PrimaryButton
-              variant="joinStatusButton"
-              iconClass="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2"
-              label="Join Organization"
-              responsiveLabel="Join"
-              icon={joinIcon}
-              onClick={() => onJoinOrganization(event.organization_id)}
-            />
-          )}
+          {userRole === "member" && (
+          <div className="flex items-start space-x-2">
+            {/* Conditional rendering based on membership status */}
+            {/* Show Join Organization button when status is null or rejected */}
+            {(!event.user_membership_status_with_organizer ||
+              event.user_membership_status_with_organizer === "rejected") && (
+              <PrimaryButton
+                variant="joinStatusButton"
+                iconClass="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2"
+                label="Join Organization"
+                responsiveLabel="Join"
+                icon={joinIcon}
+                onClick={() => onJoinOrganization(event.organization_id)}
+              />
+            )}
 
-          {/* Show For Approval button when status is pending */}
-          {event.user_membership_status_with_organizer === "pending" && (
-            <PrimaryButton
-              variant="iconButton"
-              iconClass="w-4 h-4 sm:w-5 sm:h-5"
-              label=""
-              icon={pendingIcon}
-              buttonClass="p-1"
-              onClick={() => onCancelJoiningOrganization(event.organization_id)}
-            />
-          )}
+            {/* Show For Approval button when status is pending */}
+            {event.user_membership_status_with_organizer === "pending" && (
+              <PrimaryButton
+                variant="iconButton"
+                iconClass="w-4 h-4 sm:w-5 sm:h-5"
+                label=""
+                icon={pendingIcon}
+                buttonClass="p-1"
+                onClick={() => onCancelJoiningOrganization(event.organization_id)}
+              />
+            )}
 
-          {/* Show only icon when status is approved */}
-          {event.user_membership_status_with_organizer === "approved" && (
-            <PrimaryButton
-              variant="iconButton"
-              iconClass="w-4 h-4 sm:w-5 sm:h-5"
-              label=""
-              icon={joinedIcon}
-              onClick={() => onLeaveOrganization(event.organization_id)}
-            />
-          )}
-        </div>
+            {/* Show only icon when status is approved */}
+            {event.user_membership_status_with_organizer === "approved" && (
+              <PrimaryButton
+                variant="iconButton"
+                iconClass="w-4 h-4 sm:w-5 sm:h-5"
+                label=""
+                icon={joinedIcon}
+                onClick={() => onLeaveOrganization(event.organization_id)}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {/* 2. Post Title */}
@@ -153,7 +159,7 @@ export const MemberEvents = ({
       </div>
 
       {/* RSVP Buttons - Hidden for Past events */}
-      {!isPastEvent && (
+      {!isPastEvent && userRole === "member" && (
         <div className="mb-4">
           {/* Show RSVP button if user hasn't RSVPed yet */}
           {!event.user_rsvp && (

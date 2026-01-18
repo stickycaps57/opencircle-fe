@@ -36,17 +36,14 @@ const AllOrganizationMemberList: React.FC<AllOrganizationMemberListProps> = ({
 }) => {
   const [selectedOrgId, setSelectedOrgId] = useState<number | null>(initialSelectedOrgId);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "joined" | "approval">("all");
   const { user } = useAuthStore();
   const accountUuid = user?.uuid || "";
 
   useEffect(() => {
-    if (initialSelectedOrgId && initialSelectedOrgId !== selectedOrgId) {
-      setSelectedOrgId(initialSelectedOrgId);
-    }
-    // Only react to changes in initialSelectedOrgId to avoid overriding user selection
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialSelectedOrgId]);
+  if (initialSelectedOrgId !== selectedOrgId) {
+    setSelectedOrgId(initialSelectedOrgId);
+  }
+}, [initialSelectedOrgId, selectedOrgId]);
 
   const { data: membersData, isLoading, isError, error } = useOrganizationMembers(
     selectedOrgId ?? 0
@@ -61,20 +58,13 @@ const AllOrganizationMemberList: React.FC<AllOrganizationMemberListProps> = ({
   }, [membersData, selectedOrgId]);
 
   const filteredOrganizations = useMemo(() => {
-    let list = organizations;
     const term = searchQuery.toLowerCase().trim();
-    if (term) {
-      list = list.filter((org) => org.name.toLowerCase().includes(term));
-    }
-    if (filterType === "joined" && joinedData?.organizations) {
-      const joinedIds = new Set(joinedData.organizations.map((o) => o.organization_id));
-      list = list.filter((org) => joinedIds.has(org.organization_id));
-    } else if (filterType === "approval" && pendingData?.pending_memberships) {
-      const pendingIds = new Set(pendingData.pending_memberships.map((o) => o.organization_id));
-      list = list.filter((org) => pendingIds.has(org.organization_id));
-    }
-    return list;
-  }, [organizations, searchQuery, filterType, joinedData, pendingData]);
+    if (!term) return organizations;
+
+    return organizations.filter(org =>
+      org.name.toLowerCase().includes(term)
+    );
+  }, [organizations, searchQuery]);
 
   return (
     <>
@@ -113,30 +103,15 @@ const AllOrganizationMemberList: React.FC<AllOrganizationMemberListProps> = ({
         <div className="w-full md:w-1/3 bg-gray-100 overflow-hidden flex flex-col h-auto md:h-full">
           <div className="bg-white padding-responsive-sm flex justify-between items-center border-b border-gray-200 rounded-tl-xl">
             <div className="flex">
-              <button
-                className={`text-responsive-xxs ${filterType === "all" ? "text-primary font-medium" : "text-primary-75"}`}
-                onClick={() => {
-                  if (typeof onBackToAll === "function") {
-                    onBackToAll();
-                  }
+              <PrimaryButton
+                  variant="linkXsButton"
+                  label="Back"
+                  iconClass="w-4 h-4 sm:w-5 sm:h-5 mr-2"
+                  onClick={() => {
+                  setSelectedOrgId(null);
+                  onBackToAll?.();
                 }}
-              >
-                All
-              </button>
-              <div className="w-px bg-primary mx-2 my-1"></div>
-              <button
-                className={`text-responsive-xxs ${filterType === "joined" ? "text-primary font-medium" : "text-primary-75"}`}
-                onClick={() => setFilterType("joined")}
-              >
-                Joined
-              </button>
-              <div className="w-px bg-primary mx-2 my-1"></div>
-              <button
-                className={`text-responsive-xxs ${filterType === "approval" ? "text-primary font-medium" : "text-primary-75"}`}
-                onClick={() => setFilterType("approval")}
-              >
-                For Approval
-              </button>
+                    />
             </div>
           </div>
           <div className="flex-grow overflow-y-auto">
@@ -183,14 +158,14 @@ const AllOrganizationMemberList: React.FC<AllOrganizationMemberListProps> = ({
               <h2 className="text-responsive-sm text-primary font-medium">Members</h2>
               {selectedOrgId && (
                 <div className="block">
-                  {pendingData?.pending_memberships.some((pendingOrg) => pendingOrg.organization_id === selectedOrgId) ? (
+                  {pendingData?.pending_memberships?.some((pendingOrg) => pendingOrg.organization_id === selectedOrgId) ? (
                     <PrimaryButton
                       variant="removeButton"
                       label="Remove"
                       iconClass="w-4 h-4 sm:w-5 sm:h-5 mr-2"
                       onClick={() => (typeof handleLeaveOrg === "function" ? handleLeaveOrg(selectedOrgId) : undefined)}
                     />
-                  ) : joinedData?.organizations.some((joinedOrg) => joinedOrg.organization_id === selectedOrgId) ? (
+                  ) : joinedData?.organizations?.some((joinedOrg) => joinedOrg.organization_id === selectedOrgId) ? (
                     <PrimaryButton
                       variant="leaveOrgButton"
                       label="Leave"

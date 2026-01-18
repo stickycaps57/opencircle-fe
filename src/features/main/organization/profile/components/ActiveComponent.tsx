@@ -28,7 +28,7 @@ export default function ActiveComponent({ accountUuid}: ActiveComponentProps) {
   const [postFormMode, setPostFormMode] = useState<"create" | "edit">("create");
   const [isEventFormModalOpen, setIsEventFormModalOpen] = useState(false);
   const [eventFormMode, setEventFormMode] = useState<"create" | "edit">("create");
-  const [selectedPostType, setSelectedPostType] = useState<"event" | "post">("event");
+  const [selectedPostType, setSelectedPostType] = useState<"event" | "post">("post");
 
   
 

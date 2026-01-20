@@ -62,6 +62,7 @@ export default function OrganizationProfileInterface({
           avatarImage
         ),
         uuid: organizationData.uuid,
+        user_membership_status: organizationData.user_membership_status
       }
     : user;
 

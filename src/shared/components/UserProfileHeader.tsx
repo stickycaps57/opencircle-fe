@@ -160,7 +160,7 @@ export function UserProfileHeader({ profile }: UserProfileHeaderProps) {
             <p className="text-responsive-sm text-primary mb-1">User</p>
             <p className="text-responsive-xs text-primary leading-relaxed line-clamp-3 sm:line-clamp-none">
               Profile information is loading...
-            </p>ProfileData
+            </p>
           </div>
         </div>
       </div>
@@ -169,13 +169,11 @@ export function UserProfileHeader({ profile }: UserProfileHeaderProps) {
 
   // const email = getEmail();
   const username = getUsername();
-
+  console.log("profile", profile)
   const membershipStatus = profile?.user_membership_status;
   const orgId = profile?.id;
 
   const userMembershipStatusWithOrganizer = profile?.organizer_view_user_membership;
-
-  console.log("profile.avatarUrl", profile);
 
   return (
     <div className={`flex-1 flex items-center justify-center px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:pt-8 ${isOrganization ? "bg-secondary/50" : ""}`}>
@@ -200,6 +198,7 @@ export function UserProfileHeader({ profile }: UserProfileHeaderProps) {
             
             {isMemberVisitingOrganization && (
               <div className="sm:col-span-4 flex justify-end">
+                
                 {(!membershipStatus || membershipStatus === "rejected") && (
                   <PrimaryButton
                     variant="joinStatusButton"
@@ -279,6 +278,7 @@ export function UserProfileHeader({ profile }: UserProfileHeaderProps) {
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
             <div className="sm:col-span-8 lg:col-span-9 flex justify-center sm:justify-start">
               <p className="text-responsive-xs text-primary">{getRole()}</p>
+              
             </div>
             
               <div className="sm:col-span-4 lg:col-span-3 flex justify-end">

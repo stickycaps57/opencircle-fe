@@ -48,6 +48,8 @@ src/
 │   ├── home/           # Home feature
 │   ├── landing/        # Landing page feature
 │   └── main/           # Main application features
+│   └── notification/   # Notification features
+│   └── share/          # Share events/posts features
 ├── layouts/            # Layout components
 ├── pages/              # Page components
 ├── shared/             # Shared utilities, components, and hooks
@@ -57,7 +59,6 @@ src/
 │   ├── enums/          # Enumerations
 │   ├── hooks/          # Custom hooks
 │   ├── store/          # Global state management
-│   ├── types/          # Shared types
 │   └── utils/          # Utility functions
 ```
 

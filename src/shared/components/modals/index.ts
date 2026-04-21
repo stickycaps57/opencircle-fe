@@ -9,4 +9,6 @@ export { ShareFormModal } from "./ShareFormModal";
 export { TwoFactorCodeModal } from "./TwoFactorCodeModal";
 export { OrganizationMembersModal } from "./OrganizationMembersModal";
 export { MemberOrganizationsModal } from "./MemberOrganizationsModal";
+export { NotificationModal } from "./NotificationModal";
+export { SettingsModal } from "./SettingsModal";
 

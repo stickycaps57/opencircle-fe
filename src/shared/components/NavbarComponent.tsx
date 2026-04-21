@@ -7,6 +7,7 @@ import { NotificationDropdown } from "@src/features/notification/ui/Notification
 import { useUnreadNotificationsCount } from "@src/features/notification/model/notification.query";
 import settingsIcon from "@src/assets/shared/settings_icon.png";
 import { SettingsDropdown } from "@src/shared/components/SettingsDropdown";
+import { NotificationModal, SettingsModal } from "@src/shared/components/modals";
 interface NavbarProps {
   brandName: string;
   transparent?: boolean;
@@ -27,14 +28,13 @@ export function Navbar({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isMobileNotifOpen, setIsMobileNotifOpen] = useState(false);
+  const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const shouldBeTransparent = transparent;
   const { data: unreadCountData } = useUnreadNotificationsCount(isAuthenticated);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -45,15 +45,18 @@ export function Navbar({
       if (settingsRef.current && !settingsRef.current.contains(target)) {
         setIsSettingsOpen(false);
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target) && !isMobileSettingsOpen && !isMobileNotifOpen) {
+        setIsMenuOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isMobileSettingsOpen, isMobileNotifOpen]);
 
   return (
     <nav
       className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 ${
-        shouldBeTransparent ? "bg-transparent" : "bg-white shadow-md"
+        shouldBeTransparent ? "md:bg-transparent bg-white" : "bg-white"
       }`}
     >
       <div className="w-full px-4 sm:px-6 lg:px-30 flex flex-col justify-center h-[86px]">
@@ -65,12 +68,12 @@ export function Navbar({
               onClick={() => (window.location.href = "/")}
             >
               <img
-                src={shouldBeTransparent ? brandlogo : brandLogoDark}
+                src={shouldBeTransparent && window.innerWidth >= 768 ? brandlogo : brandLogoDark}
                 className="h-full max-h-full w-auto object-contain"
               />
               <div
                 className={`hidden sm:block text-responsive-lg font-semibold transition-colors duration-300 ${
-                  shouldBeTransparent ? "text-white" : "text-primary"
+                  shouldBeTransparent && window.innerWidth >= 768 ? "text-white" : "text-primary"
                 }`}
               >
                 {brandName}
@@ -128,14 +131,17 @@ export function Navbar({
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden flex items-center p-2"
-            onClick={toggleMenu}
+            type="button"
+            className="md:hidden flex items-center p-2 z-40"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMenuOpen(!isMenuOpen);
+            }}
+            onMouseDown={(e) => e.stopPropagation()}
             aria-label="Toggle menu"
           >
             <svg
-              className={`w-6 h-6 transition-colors duration-300 ${
-                shouldBeTransparent ? "text-white" : "text-primary"
-              }`}
+              className="w-6 h-6 transition-colors duration-300 text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -161,15 +167,30 @@ export function Navbar({
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden bg-white shadow-lg absolute top-[86px] left-0 right-0 z-50 py-4 px-4 border-t">
+          <div ref={mobileMenuRef} className="md:hidden bg-white shadow-lg absolute top-[86px] left-0 right-0 z-50 py-4 px-4 border-t">
             <div className="w-full text-primary">{navMenu}</div>
             <div className="mt-4">
               {isAuthenticated ? (
                 <div className="flex items-center space-x-4">
-                  <button type="button" className="p-2" aria-label="Notificationszzzzz">
-                    <img src={notificationIcon} alt="Notifications123" className="w-6 h-6" />
+                  <button
+                    type="button"
+                    className="p-2 relative"
+                    aria-label="Notifications"
+                    onClick={() => setIsMobileNotifOpen(true)}
+                  >
+                    <img src={notificationIcon} alt="Notifications" className="w-6 h-6" />
+                    {unreadCountData?.unread_count ? (
+                      <span className="absolute top-0 right-0 min-w-[20px] h-5 px-1 rounded-full bg-primary text-white text-responsive-xxs flex items-center justify-center">
+                        {unreadCountData.unread_count}
+                      </span>
+                    ) : null}
                   </button>
-                  <button type="button" className="p-2" aria-label="Settings">
+                  <button
+                    type="button"
+                    className="p-2"
+                    aria-label="Settings"
+                    onClick={() => setIsMobileSettingsOpen(true)}
+                  >
                     <img src={settingsIcon} alt="Settings" className="w-6 h-6" />
                   </button>
                 </div>
@@ -178,6 +199,19 @@ export function Navbar({
               )}
             </div>
           </div>
+        )}
+
+        {isMobileNotifOpen && <NotificationModal isOpen={isMobileNotifOpen} onClose={() => setIsMobileNotifOpen(false)} />}
+
+        {isMobileSettingsOpen && (
+          <SettingsModal
+            isOpen={isMobileSettingsOpen}
+            onClose={() => setIsMobileSettingsOpen(false)}
+            onLogoutClick={() => {
+              setIsMobileSettingsOpen(false);
+              onButtonClick?.();
+            }}
+          />
         )}
       </div>
     </nav>

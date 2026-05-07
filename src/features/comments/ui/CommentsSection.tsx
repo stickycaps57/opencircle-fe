@@ -132,10 +132,18 @@ export function CommentsSection({
       </div>
       {contentType === "event" ? (
         <div className={`flex justify-around items-center mb-2 sm:mb-3 md:mb-4`}>
-          <div className="flex items-center space-x-2">
+          <button
+            onClick={onViewMoreComments}
+            className={`flex items-center space-x-2 transition-all duration-200 ${
+              hasMoreComments
+                ? "cursor-pointer hover:underline"
+                : "cursor-not-allowed opacity-50"
+            }`}
+            disabled={!hasMoreComments}
+          >
             <img src={commentIcon} alt="Comments" className="w-4 h-4" />
             <h4 className="text-responsive-xs font-semibold text-primary">Comments</h4>
-          </div>
+          </button>
           <div className="flex items-center space-x-2">
             <img src={participantsIcon} alt="Participants" className="w-4 h-4" />
             <PrimaryButton label="Participants" variant="shareButton" onClick={() => setIsParticipantsModalOpen(true)} />
@@ -152,10 +160,18 @@ export function CommentsSection({
         </div>
       ) : (
         <div className="flex justify-around items-center mb-2 sm:mb-3 md:mb-4">
-          <div className="flex items-center space-x-2">
+          <button
+            onClick={onViewMoreComments}
+            className={`flex items-center space-x-2 transition-all duration-200 ${
+              hasMoreComments
+                ? "cursor-pointer hover:underline"
+                : "cursor-not-allowed opacity-50"
+            }`}
+            disabled={!hasMoreComments}
+          >
             <img src={commentIcon} alt="Comments" className="w-4 h-4" />
             <h4 className="text-responsive-xs font-semibold text-primary">Comments</h4>
-          </div>
+          </button>
           <div></div>
           <div className="flex items-center space-x-2">
             <img src={shareIcon} alt="Share" className="w-4 h-4" />

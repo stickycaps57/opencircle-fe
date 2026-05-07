@@ -315,7 +315,7 @@ export function EventDetailsModal({
                     event.user_rsvp?.status === "joined" && (
                       <PrimaryButton
                         variant={"activeEventButton"}
-                        label={"Approved"}
+                        label={"Cancel RSVP"}
                         onClick={() =>
                           onDeleteRsvpEvent(event.user_rsvp?.rsvp_id)
                         }

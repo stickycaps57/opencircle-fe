@@ -1,5 +1,5 @@
-import DashboardInterface from "@src/features/main/organization/dashboard/ui/DashboardInterface";
+import DashboardLayout from "@src/features/main/organization/dashboard/ui/DashboardLayout";
 
 export default function OrganizationDashboardPage() {
-  return <DashboardInterface />;
+  return <DashboardLayout />;
 }

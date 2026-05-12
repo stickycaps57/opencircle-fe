@@ -6,10 +6,9 @@ import PostInteractionStatistic from "@src/features/main/organization/dashboard/
 
 export default function DashboardInterface() {
   return (
-    <div className="w-full md:w-11/12 lg:w-4/5 px-4 sm:px-6 lg:px-30 py-10 mx-auto">
+    <div className="w-full px-4 sm:px-6 lg:px-30 py-4 sm:py-6 lg:py-8 mx-auto">
       <MemberStatistic />
-      <EventsStatistic
-      />
+      <EventsStatistic />
       <MemberInteractionStatistic />
       <EventInteractionStatistic />
       <PostInteractionStatistic />

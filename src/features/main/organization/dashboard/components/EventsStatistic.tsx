@@ -4,6 +4,7 @@ import { DEFAULT_GRAPH_COLORS } from "@src/shared/enums/graphColors";
 import { RSVP_LABELS, buildRsvpSeries } from "@src/shared/enums/rsvp";
 import ActiveAndPastEventsStatistic from "./ActiveAndPastEventsStatistic";
 import { useState } from "react";
+import { convertToUTC } from "@src/shared/utils";
 
 export default function EventsStatistic() {
   const now = new Date();
@@ -14,7 +15,10 @@ export default function EventsStatistic() {
   const [startDate, setStartDate] = useState(`${oneWeekAgo}T00:00`);
   const [endDate, setEndDate] = useState(`${today}T23:59`);
 
-  const { data } = useEventsSummary({ start_date: startDate, end_date: endDate });
+  const { data } = useEventsSummary({
+    start_date: convertToUTC(startDate),
+    end_date: convertToUTC(endDate),
+  });
   const joined = data?.summary.rsvp_counts.joined ?? 67;
   const pending = data?.summary.rsvp_counts.pending ?? 87;
   const rejected = data?.summary.rsvp_counts.rejected ?? 20;

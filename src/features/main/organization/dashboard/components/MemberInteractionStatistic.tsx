@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useCommentAnalyticsSummary } from "@src/features/main/organization/dashboard/model/dashboard.query";
 import { DEFAULT_GRAPH_COLORS } from "@src/shared/enums/graphColors";
+import { convertToUTC } from "@src/shared/utils";
 
 export default function MemberInteractionStatistic() {
   const now = new Date();
@@ -10,8 +11,12 @@ export default function MemberInteractionStatistic() {
   const oneWeekAgo = lastWeek.toISOString().split("T")[0];
 
   const [startDate, setStartDate] = useState(`${oneWeekAgo}T00:00`);
-  const [endDate, setEndDate] = useState(`${today}T23:59`); 
-  const { data } = useCommentAnalyticsSummary({ start_date: startDate, end_date: endDate });
+  const [endDate, setEndDate] = useState(`${today}T23:59`);
+
+  const { data } = useCommentAnalyticsSummary({
+    start_date: convertToUTC(startDate),
+    end_date: convertToUTC(endDate),
+  });
 
   const categories = useMemo(() => {
     const trends = data?.daily_trends ?? [];

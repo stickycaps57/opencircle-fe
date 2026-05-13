@@ -2,12 +2,17 @@ import { useMemo, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useEventCommentAnalyticsSummary } from "@src/features/main/organization/dashboard/model/dashboard.query";
 import { DEFAULT_GRAPH_COLORS } from "@src/shared/enums/graphColors";
+import { convertToUTC } from "@src/shared/utils";
 
 export default function EventInteractionStatistic() {
   const today = new Date().toISOString().split("T")[0];
   const [startDate, setStartDate] = useState(`${today}T00:00`);
   const [endDate, setEndDate] = useState(`${today}T23:59`);
-  const { data } = useEventCommentAnalyticsSummary({ start_date: startDate, end_date: endDate });
+
+  const { data } = useEventCommentAnalyticsSummary({
+    start_date: convertToUTC(startDate),
+    end_date: convertToUTC(endDate),
+  });
 
   const categories = useMemo(() => {
     const items = data?.event_analytics ?? [];

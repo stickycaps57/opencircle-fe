@@ -1,5 +1,6 @@
 import { useMembershipAnalytics } from "@src/features/main/organization/dashboard/model/dashboard.query";
 import { useState } from "react";
+import { convertToUTC } from "@src/shared/utils";
 
 export default function MemberStatistic() {
   const now = new Date();
@@ -11,8 +12,8 @@ export default function MemberStatistic() {
   const [endDate, setEndDate] = useState(`${today} 23:59`);
 
   const { data: membership } = useMembershipAnalytics({
-    start_date: startDate,
-    end_date: endDate,
+    start_date: convertToUTC(startDate),
+    end_date: convertToUTC(endDate),
   });
   const counts = membership?.membership_analytics?.status_counts;
 

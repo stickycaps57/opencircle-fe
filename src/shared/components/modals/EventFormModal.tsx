@@ -23,6 +23,7 @@ import {
   usePGSCLocation,
   type LocationOption,
 } from "@src/shared/hooks/usePGSCLocation";
+import { convertToUTC } from "@src/shared/utils";
 
 interface EventFormModalProps {
   isOpen: boolean;
@@ -418,17 +419,22 @@ export const EventFormModal = ({
     setError("");
 
     try {
+      const formDataWithUTC = {
+        ...data,
+        event_date: convertToUTC(data.event_date),
+      };
+
       if (mode === "create") {
         // Create new event
-        await createEventMutation.mutateAsync(data as CreateEventFormData);
+        await createEventMutation.mutateAsync(formDataWithUTC as CreateEventFormData);
       } else if (mode === "edit" && eventId) {
         // For edit mode, only include the image if a new one was selected
         // This prevents the backend from removing the existing image when only other fields are changed
-        const eventDataToUpdate = { ...data };
+        const eventDataToUpdate = { ...formDataWithUTC };
 
         // If no new image was selected, remove the image field completely
         // to prevent the backend from clearing the existing image
-        if (data.image === undefined) {
+        if (formDataWithUTC.image === undefined) {
           delete eventDataToUpdate.image;
         }
 

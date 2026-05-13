@@ -223,9 +223,7 @@ export default function GoalsSection() {
       {/* Mobile Layout */}
       <div className="lg:hidden px-4 sm:px-6">
         <div className="mb-6 flex flex-row items-center justify-start gap-3">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            Goals
-          </h2>
+          <h2 className="text-responsive-base font-bold text-primary">Goals</h2>
           <button
             onClick={handleOpenCreateGoalModal}
             className="px-4 sm:px-5 py-2 bg-slate-700 text-white rounded-full font-medium text-sm sm:text-base hover:bg-slate-800 transition-colors inline-flex items-center gap-2"
@@ -296,7 +294,7 @@ export default function GoalsSection() {
       {/* Desktop Layout */}
       <div className="hidden lg:block px-6 mx-auto">
         <div className="mb-6 flex flex-row items-center justify-start gap-3">
-          <h2 className="text-3xl font-bold text-slate-900">Goals</h2>
+          <h2 className="text-responsive-base font-bold text-primary">Goals</h2>
           <button
             onClick={handleOpenCreateGoalModal}
             className="px-5 py-2 bg-slate-700 text-white rounded-full font-medium text-base hover:bg-slate-800 transition-colors inline-flex items-center gap-2"
@@ -322,9 +320,9 @@ export default function GoalsSection() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 items-center">
           {goals.map((goal) => (
-            <div key={goal.id} className="flex gap-4 items-stretch">
+            <div key={goal.id} className="flex gap-4 items-center">
               {/* Goal Card - Always 80% */}
               <div style={{ width: "80%" }}>
                 <GoalCard

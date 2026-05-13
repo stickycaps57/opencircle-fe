@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardInterface from "./DashboardInterface";
 import GoalsSection from "../components/GoalsSection";
 
@@ -10,8 +10,22 @@ interface Section {
   icon: string;
 }
 
+const DASHBOARD_SECTION_KEY = "dashboard_active_section";
+
 export default function DashboardLayout() {
   const [activeSection, setActiveSection] = useState<SectionType>("analytics");
+
+  useEffect(() => {
+    const savedSection = localStorage.getItem(DASHBOARD_SECTION_KEY) as SectionType | null;
+    if (savedSection && (savedSection === "analytics" || savedSection === "goals")) {
+      setActiveSection(savedSection);
+    }
+  }, []);
+
+  const handleSectionChange = (section: SectionType) => {
+    setActiveSection(section);
+    localStorage.setItem(DASHBOARD_SECTION_KEY, section);
+  };
 
   const sections: Section[] = [
     { id: "analytics", label: "Overall Analytics", icon: "📊" },
@@ -27,7 +41,7 @@ export default function DashboardLayout() {
             {sections.map((section) => (
               <button
                 key={section.id}
-                onClick={() => setActiveSection(section.id)}
+                onClick={() => handleSectionChange(section.id)}
                 className={`flex-1 px-3 sm:px-4 py-3 font-medium text-xs sm:text-sm transition-colors relative ${
                   activeSection === section.id
                     ? "text-slate-900"
@@ -52,7 +66,7 @@ export default function DashboardLayout() {
             {sections.map((section) => (
               <button
                 key={section.id}
-                onClick={() => setActiveSection(section.id)}
+                onClick={() => handleSectionChange(section.id)}
                 className={`w-full text-left px-0 py-4 font-semibold text-base transition-colors flex items-center gap-3 ${
                   activeSection === section.id
                     ? "bg-athens_gray text-slate-900"

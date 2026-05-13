@@ -14,6 +14,7 @@ import {
 import { useCreateGoal, useUpdateGoal } from "@src/features/main/organization/dashboard/model/goal.mutation";
 import { useGetGoal } from "@src/features/main/organization/dashboard/model/goal.query";
 import { useAuthStore } from "@src/shared/store";
+import { convertToUTC } from "@src/shared/utils";
 
 interface CreateGoalModalProps {
   isOpen: boolean;
@@ -111,15 +112,21 @@ export function CreateGoalModal({
   );
 
   const onSubmit = handleSubmit((data) => {
+    const formDataWithUTC = {
+      ...data,
+      startDate: convertToUTC(data.startDate),
+      endDate: convertToUTC(data.endDate),
+    };
+
     if (mode === "create") {
-      createGoal(data as CreateGoalFormData, {
+      createGoal(formDataWithUTC as CreateGoalFormData, {
         onSuccess: () => {
           handleClose();
         },
       });
     } else if (mode === "edit" && goalId) {
       updateGoalMutation(
-        { goalId, formData: data as CreateGoalFormData },
+        { goalId, formData: formDataWithUTC as CreateGoalFormData },
         {
           onSuccess: () => {
             handleClose();

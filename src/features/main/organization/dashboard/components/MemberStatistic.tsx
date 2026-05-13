@@ -1,6 +1,6 @@
 import { useMembershipAnalytics } from "@src/features/main/organization/dashboard/model/dashboard.query";
 import { useState } from "react";
-import { convertToUTC } from "@src/shared/utils";
+import { convertToUTC, getLocalDateTimeString } from "@src/shared/utils";
 
 export default function MemberStatistic() {
   const now = new Date();
@@ -10,6 +10,8 @@ export default function MemberStatistic() {
 
   const [startDate, setStartDate] = useState(`${oneWeekAgo} 00:00`);
   const [endDate, setEndDate] = useState(`${today} 23:59`);
+
+  const todayMin = getLocalDateTimeString(now);
 
   const { data: membership } = useMembershipAnalytics({
     start_date: convertToUTC(startDate),
@@ -34,12 +36,15 @@ export default function MemberStatistic() {
               type="datetime-local"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
+              min={todayMin}
+              max={endDate || undefined}
               className="border border-gray-300 rounded-lg px-3 py-2 text-responsive-xs text-primary bg-white"
             />
            <input
               type="datetime-local"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
+              min={todayMin}
               className="border border-gray-300 rounded-lg px-3 py-2 text-responsive-xs text-primary bg-white"
             />
          </div>

@@ -23,7 +23,7 @@ import {
   usePGSCLocation,
   type LocationOption,
 } from "@src/shared/hooks/usePGSCLocation";
-import { convertToUTC } from "@src/shared/utils";
+import { convertToUTC, getLocalDateTimeString } from "@src/shared/utils";
 
 interface EventFormModalProps {
   isOpen: boolean;
@@ -601,6 +601,7 @@ export const EventFormModal = ({
                 setValue("event_date", e.target.value, { shouldValidate: true })
               }
               className={errors.event_date ? "border-red-500" : ""}
+              min={getLocalDateTimeString(new Date())}
             />
             {errors.event_date && (
               <p className="text-red-500 text-xs mt-1">

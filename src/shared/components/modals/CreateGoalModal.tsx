@@ -14,7 +14,7 @@ import {
 import { useCreateGoal, useUpdateGoal } from "@src/features/main/organization/dashboard/model/goal.mutation";
 import { useGetGoal } from "@src/features/main/organization/dashboard/model/goal.query";
 import { useAuthStore } from "@src/shared/store";
-import { convertToUTC } from "@src/shared/utils";
+import { convertToUTC, getLocalDateTimeString } from "@src/shared/utils";
 
 interface CreateGoalModalProps {
   isOpen: boolean;
@@ -226,6 +226,8 @@ export function CreateGoalModal({
                 onChange={handleStartDateChange}
                 placeholder="Start Date"
                 className={errors.startDate ? "border-red-500" : ""}
+                min={getLocalDateTimeString(new Date())}
+                max={watch("endDate") || undefined}
               />
               {errors.startDate && (
                 <p className="text-red-500 text-xs mt-1">
@@ -241,6 +243,7 @@ export function CreateGoalModal({
                 onChange={handleEndDateChange}
                 placeholder="End Date"
                 className={errors.endDate ? "border-red-500" : ""}
+                min={getLocalDateTimeString(new Date())}
               />
               {errors.endDate && (
                 <p className="text-red-500 text-xs mt-1">

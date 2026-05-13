@@ -9,6 +9,8 @@ interface CustomDateFieldProps {
   placeholder?: string;
   required?: boolean;
   className?: string;
+  min?: string;
+  max?: string;
 }
 
 export const CustomDateField = ({
@@ -18,6 +20,8 @@ export const CustomDateField = ({
   // placeholder,
   required = false,
   className = "",
+  min,
+  max,
 }: CustomDateFieldProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { formatDateTime } = useFormatDate();
@@ -65,6 +69,8 @@ export const CustomDateField = ({
           value={value}
           onChange={onChange}
           required={required}
+          min={min}
+          max={max}
           className="absolute w-full h-full inset-0 opacity-0 cursor-pointer pointer-events-none"
         />
       </div>

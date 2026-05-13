@@ -1,11 +1,17 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import { LoadingState } from "@src/shared/components";
+import { useState, useEffect } from "react";
+import { LoadingState, ErrorState } from "@src/shared/components";
+import { ConfirmationModal } from "@src/shared/components/modals";
 import { CreateGoalModal } from "@src/shared/components/modals/CreateGoalModal";
 import GoalCard from "@src/shared/components/GoalCard";
 import RecommendationCard from "@src/shared/components/RecommendationCard";
 import { GOAL_FILTERS, type GoalFilterType } from "../lib/goalFilters";
+import { useInfiniteGoals } from "../model/goal.infinite.query";
+import { useAuthStore } from "@src/shared/store";
+import { useInfiniteScroll, useConfirmationModal } from "@src/shared/hooks";
+import { GOAL_RECOMMENDATIONS } from "../lib/goalRecommendations";
+import { useDeleteGoal } from "../model/goal.mutation";
 
-interface Goal {
+interface TransformedGoal {
   id: number;
   title: string;
   type: string;
@@ -14,129 +20,203 @@ interface Goal {
   endDate: string;
   color: "gray" | "green" | "pink";
   hasRecommendation?: boolean;
+  target_reached: boolean | null;
+  recommendationMessage?: string;
 }
 
-const generateMockGoals = (page: number, perPage: number = 3): Goal[] => {
-  const allGoals: Goal[] = [
-    {
-      id: 1,
-      title: "June July Goal",
-      type: "Member Growth Goal",
-      progress: 79,
-      startDate: "Jun 1, 2025",
-      endDate: "Jul 26, 2025",
-      color: "gray",
-      hasRecommendation: false,
-    },
-    {
-      id: 2,
-      title: "May",
-      type: "Member Growth Goal",
-      progress: 79,
-      startDate: "Jun 1, 2025",
-      endDate: "Jul 26, 2025",
-      color: "green",
-      hasRecommendation: true,
-    },
-    {
-      id: 3,
-      title: "May",
-      type: "Member Growth Goal",
-      progress: 79,
-      startDate: "Jun 1, 2025",
-      endDate: "Jul 26, 2025",
-      color: "pink",
-      hasRecommendation: true,
-    },
-    {
-      id: 4,
-      title: "Q3 Engagement Goal",
-      type: "Member Growth Goal",
-      progress: 65,
-      startDate: "Jul 1, 2025",
-      endDate: "Sep 30, 2025",
-      color: "gray",
-      hasRecommendation: false,
-    },
-    {
-      id: 5,
-      title: "August Target",
-      type: "Member Growth Goal",
-      progress: 82,
-      startDate: "Aug 1, 2025",
-      endDate: "Aug 31, 2025",
-      color: "green",
-      hasRecommendation: true,
-    },
-  ];
+const formatDate = (dateString: string): string => {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return dateString;
+  }
+};
 
-  const startIndex = page * perPage;
-  return allGoals.slice(startIndex, startIndex + perPage);
+const getGoalTypeLabel = (goalType: string): string => {
+  const typeMap: Record<string, string> = {
+    member_growth: "Member Growth Goal",
+    event_participation: "Event Participation Goal",
+    engagement: "Engagement Goal",
+    announcement_activity: "Announcement Activity Goal",
+    retention: "Retention Goal",
+  };
+  return typeMap[goalType] || goalType;
+};
+
+const getGoalColor = (
+  status: string,
+  targetReached: boolean | null
+): "gray" | "green" | "pink" => {
+  // Achieved goals are always green
+  if (status === "achieved") return "green";
+
+  // Already behind target
+  if (status === "behind_target") return "pink";
+
+  // For in_progress goals: check if midpoint expectation was met
+  if (status === "in_progress") {
+    // If target_reached is null, goal is before midpoint - neutral
+    if (targetReached === null) return "gray";
+    // If target_reached is false, goal is behind on expectations at midpoint
+    if (targetReached === false) return "pink";
+    // If target_reached is true, goal is on track at midpoint
+    return "gray";
+  }
+
+  return "gray";
+};
+
+const shouldShowRecommendation = (
+  status: string,
+  targetReached: boolean | null
+): boolean => {
+  // Don't show recommendation before midpoint (target_reached is null)
+  if (targetReached === null) return false;
+
+  // Show recommendation for behind target (warning)
+  if (status === "behind_target") return true;
+
+  // Show recommendation for in_progress goals (both positive and negative)
+  if (status === "in_progress") return true;
+
+  // Show recommendation for achieved goals (success celebration)
+  if (status === "achieved" && targetReached) return true;
+
+  return false;
+};
+
+const getStatusFromFilter = (filter: GoalFilterType): string | undefined => {
+  const statusMap: Record<GoalFilterType, string | undefined> = {
+    all: undefined,
+    inProgress: "in_progress",
+    achieved: "achieved",
+    behindTarget: "behind_target",
+  };
+  return statusMap[filter];
 };
 
 export default function GoalsSection() {
-  const [goals, setGoals] = useState<Goal[]>(generateMockGoals(0));
-  const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const { user } = useAuthStore();
+  const organizationId = user?.id || 0;
+
+  const [goals, setGoals] = useState<TransformedGoal[]>([]);
   const [goalFilter, setGoalFilter] = useState<GoalFilterType>("all");
   const [isCreateGoalModalOpen, setIsCreateGoalModalOpen] = useState(false);
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [goalFormMode, setGoalFormMode] = useState<"create" | "edit">("create");
+  const [selectedGoalId, setSelectedGoalId] = useState<number | null>(null);
+  const { isConfirmModalOpen, modalConfig, openConfirmationModal, closeConfirmationModal } = useConfirmationModal();
+  const deleteGoalMutation = useDeleteGoal();
+
+  const {
+    data: infiniteGoalsData,
+    isLoading,
+    error: goalsError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteGoals({
+    organizationId,
+    page_size: 10,
+    status: getStatusFromFilter(goalFilter),
+  });
+
+  const handleFetchNextPage = () => {
+    if (!isFetchingNextPage && hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const { sentinelRef } = useInfiniteScroll({
+    onLoadMore: handleFetchNextPage,
+    hasMore: !!hasNextPage,
+  });
+
+  useEffect(() => {
+    if (infiniteGoalsData?.pages) {
+      const allGoals = infiniteGoalsData.pages.flatMap((page) => page.goals);
+      const transformedGoals = allGoals.map((goal): TransformedGoal => {
+        const showRecommendation = shouldShowRecommendation(
+          goal.status,
+          goal.target_reached
+        );
+        const isPositive = goal.target_reached === true || goal.status === "achieved";
+
+        let recommendationMessage = "";
+
+        if (showRecommendation) {
+          const recommendations = GOAL_RECOMMENDATIONS[goal.goal_type];
+          if (recommendations) {
+            const rec = isPositive
+              ? recommendations.positive
+              : recommendations.negative;
+            recommendationMessage = rec.message;
+          }
+        }
+
+        return {
+          ...goal,
+          color: getGoalColor(goal.status, goal.target_reached),
+          hasRecommendation: showRecommendation,
+          startDate: formatDate(goal.start_date),
+          endDate: formatDate(goal.end_date),
+          type: getGoalTypeLabel(goal.goal_type),
+          progress: goal.progress.progress_percentage,
+          title: goal.title,
+          recommendationMessage,
+        };
+      });
+      setGoals(transformedGoals);
+    }
+  }, [infiniteGoalsData]);
 
   const handleEditGoal = (goalId: number) => {
-    console.log("Edit goal:", goalId);
-    // TODO: Implement edit functionality
+    setSelectedGoalId(goalId);
+    setGoalFormMode("edit");
+    setIsCreateGoalModalOpen(true);
   };
 
   const handleDeleteGoal = (goalId: number) => {
-    console.log("Delete goal:", goalId);
-    // TODO: Implement delete functionality
+    openConfirmationModal({
+      title: "Delete Goal",
+      message: "This will permanently remove the goal and all related details. Proceed?",
+      confirmButtonText: "Delete",
+      confirmButtonVariant: "primary",
+      onConfirm: async () => {
+        try {
+          await deleteGoalMutation.mutateAsync(goalId);
+        } catch (error) {
+          console.error("Failed to delete goal:", error);
+        }
+      },
+    });
   };
 
   const handleOpenCreateGoalModal = () => {
+    setSelectedGoalId(null);
+    setGoalFormMode("create");
     setIsCreateGoalModalOpen(true);
   };
 
   const handleCloseCreateGoalModal = () => {
+    setSelectedGoalId(null);
+    setGoalFormMode("create");
     setIsCreateGoalModalOpen(false);
   };
 
-  const handleLoadMore = useCallback(() => {
-    if (isLoading || !hasMore) return;
-
-    setIsLoading(true);
-    setTimeout(() => {
-      const newGoals = generateMockGoals(page + 1);
-      if (newGoals.length === 0) {
-        setHasMore(false);
-      } else {
-        setGoals((prev) => [...prev, ...newGoals]);
-        setPage((prev) => prev + 1);
-      }
-      setIsLoading(false);
-    }, 600);
-  }, [page, isLoading, hasMore]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading) {
-          handleLoadMore();
-        }
-      },
-      { threshold: 0.1 }
+  if (goalsError) {
+    return (
+      <div className="w-full min-h-screen bg-athens_gray py-4 sm:py-6 lg:py-8">
+        <div className="px-4 sm:px-6 lg:px-30">
+          <ErrorState message="An error occurred while fetching goals. Please try again later." />
+        </div>
+      </div>
     );
-
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current);
-    }
-
-    return () => {
-      if (sentinelRef.current) {
-        observer.unobserve(sentinelRef.current);
-      }
-    };
-  }, [handleLoadMore, hasMore, isLoading]);
+  }
 
   return (
     <div className="w-full min-h-screen bg-athens_gray py-4 sm:py-6 lg:py-8">
@@ -202,7 +282,7 @@ export default function GoalsSection() {
             </div>
           )}
 
-          {hasMore && (
+          {hasNextPage && (
             <div
               ref={sentinelRef}
               className="w-full h-16 flex items-center justify-center text-slate-500"
@@ -210,17 +290,11 @@ export default function GoalsSection() {
               <span className="text-xs sm:text-sm">Scroll to load more goals</span>
             </div>
           )}
-
-          {!hasMore && goals.length > 0 && (
-            <div className="text-center py-3 text-slate-500">
-              <p className="text-xs sm:text-sm">No more goals to load</p>
-            </div>
-          )}
         </div>
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden lg:block px-30 mx-auto">
+      <div className="hidden lg:block px-6 mx-auto">
         <div className="mb-6 flex flex-row items-center justify-start gap-3">
           <h2 className="text-3xl font-bold text-slate-900">Goals</h2>
           <button
@@ -269,7 +343,7 @@ export default function GoalsSection() {
               {/* Recommendation Card - Always 20% space reserved */}
               <div style={{ width: "20%" }} className="flex-shrink-0">
                 {goal.hasRecommendation && (
-                  <RecommendationCard color={goal.color} />
+                  <RecommendationCard color={goal.color} message={goal.recommendationMessage || ""} />
                 )}
               </div>
             </div>
@@ -290,7 +364,7 @@ export default function GoalsSection() {
             </div>
           )}
 
-          {hasMore && (
+          {hasNextPage && (
             <div
               ref={sentinelRef}
               className="w-full h-20 flex items-center justify-center text-slate-500"
@@ -298,20 +372,29 @@ export default function GoalsSection() {
               <span className="text-sm">Scroll to load more goals</span>
             </div>
           )}
-
-          {!hasMore && goals.length > 0 && (
-            <div className="text-center py-4 text-slate-500">
-              <p className="text-sm">No more goals to load</p>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Create Goal Modal */}
+      {/* Create/Edit Goal Modal */}
       <CreateGoalModal
         isOpen={isCreateGoalModalOpen}
         onClose={handleCloseCreateGoalModal}
+        mode={goalFormMode}
+        goalId={selectedGoalId || undefined}
       />
+
+      {/* Confirmation Modal */}
+      {modalConfig && (
+        <ConfirmationModal
+          isOpen={isConfirmModalOpen}
+          title={modalConfig.title}
+          message={modalConfig.message}
+          confirmButtonText={modalConfig.confirmButtonText}
+          confirmButtonVariant={modalConfig.confirmButtonVariant}
+          onConfirm={modalConfig.onConfirm}
+          onClose={closeConfirmationModal}
+        />
+      )}
     </div>
   );
 }

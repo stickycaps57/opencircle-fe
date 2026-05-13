@@ -47,7 +47,11 @@ export const QUERY_KEYS = {
   COMMENT_ANALYTICS_SUMMARY: "comment-analytics-summary",
   EVENT_COMMENT_ANALYTICS_SUMMARY: "event-comment-analytics-summary",
   POST_COMMENT_ANALYTICS_SUMMARY: "post-comment-analytics-summary",
-  
+
+  // GOALS
+  GOALS: "goals",
+  ORGANIZATION_GOALS: "organization-goals",
+
   // AUTH
   TWO_FA_STATUS: "two-fa-status",
 };

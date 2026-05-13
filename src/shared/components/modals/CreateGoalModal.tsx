@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Modal } from "../Modal";
 import { CustomSelectField } from "../CustomSelectField";
 import { CustomDateField } from "../CustomDateField";
@@ -10,12 +10,16 @@ import {
   type CreateGoalFormData,
   type EditGoalFormData,
   type GoalFormMode,
-} from "@src/features/main/organization/dashboard/lib/goal.schema";
+} from "@src/features/main/organization/dashboard/schema/goal.schema";
+import { useCreateGoal, useUpdateGoal } from "@src/features/main/organization/dashboard/model/goal.mutation";
+import { useGetGoal } from "@src/features/main/organization/dashboard/model/goal.query";
+import { useAuthStore } from "@src/shared/store";
 
 interface CreateGoalModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode?: GoalFormMode;
+  goalId?: number;
 }
 
 const GOAL_TYPES = [
@@ -29,7 +33,21 @@ export function CreateGoalModal({
   isOpen,
   onClose,
   mode = "create",
+  goalId,
 }: CreateGoalModalProps) {
+  const { user } = useAuthStore();
+  const organizationId = user?.id || 0;
+  const { mutate: createGoal, isPending } = useCreateGoal(organizationId);
+  const { mutate: updateGoalMutation, isPending: isUpdating } = useUpdateGoal();
+
+  const memoizedGoalId = useMemo(() => goalId || 0, [goalId]);
+  const memoizedEnabled = useMemo(
+    () => mode === "edit" && !!goalId,
+    [mode, goalId]
+  );
+
+  const { data: fetchedGoalData } = useGetGoal(memoizedGoalId, memoizedEnabled);
+
   const {
     register,
     handleSubmit,
@@ -47,6 +65,23 @@ export function CreateGoalModal({
       endDate: "",
     },
   });
+
+  useEffect(() => {
+    if (fetchedGoalData && mode === "edit") {
+      const goalStartDate = new Date(fetchedGoalData.start_date)
+        .toISOString()
+        .split("T")[0];
+      const goalEndDate = new Date(fetchedGoalData.end_date)
+        .toISOString()
+        .split("T")[0];
+
+      setValue("goalName", fetchedGoalData.title);
+      setValue("goalType", fetchedGoalData.goal_type);
+      setValue("targetNumber", fetchedGoalData.target_value.toString());
+      setValue("startDate", goalStartDate);
+      setValue("endDate", goalEndDate);
+    }
+  }, [fetchedGoalData, mode, setValue]);
 
   const handleClose = useCallback(() => {
     reset();
@@ -74,10 +109,23 @@ export function CreateGoalModal({
     [setValue]
   );
 
-  const onSubmit = handleSubmit(async (data) => {
-    console.log("Saving goal:", data);
-    // TODO: Implement save functionality with API call
-    handleClose();
+  const onSubmit = handleSubmit((data) => {
+    if (mode === "create") {
+      createGoal(data as CreateGoalFormData, {
+        onSuccess: () => {
+          handleClose();
+        },
+      });
+    } else if (mode === "edit" && goalId) {
+      updateGoalMutation(
+        { goalId, formData: data as CreateGoalFormData },
+        {
+          onSuccess: () => {
+            handleClose();
+          },
+        }
+      );
+    }
   });
 
   const modalTitle = mode === "create" ? "Create Goal" : "Edit Goal";
@@ -201,9 +249,10 @@ export function CreateGoalModal({
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-primary text-white py-4 rounded-full font-medium hover:bg-opacity-90 transition-colors text-responsive-sm"
+          disabled={isPending || isUpdating}
+          className="w-full bg-primary text-white py-4 rounded-full font-medium hover:bg-opacity-90 transition-colors text-responsive-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {submitButtonText}
+          {isPending || isUpdating ? "Saving..." : submitButtonText}
         </button>
       </form>
     </Modal>

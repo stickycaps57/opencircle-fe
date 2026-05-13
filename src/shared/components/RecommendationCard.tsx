@@ -1,11 +1,11 @@
 interface RecommendationCardProps {
   color: "gray" | "green" | "pink";
-  title?: string;
+  message: string;
 }
 
 export default function RecommendationCard({
   color,
-  title = "Member Growth Goal",
+  message,
 }: RecommendationCardProps) {
   const bgColorClasses = {
     gray: "bg-white",
@@ -13,15 +13,19 @@ export default function RecommendationCard({
     pink: "bg-red-50",
   };
 
+  const borderColorClasses = {
+    gray: "border-gray-200",
+    green: "border-green-200",
+    pink: "border-red-200",
+  };
+
   return (
     <div
-      className={`${bgColorClasses[color]} rounded-full p-4 sm:p-6 border border-gray-200 flex-shrink-0 flex items-center justify-center`}
+      className={`${bgColorClasses[color]} ${borderColorClasses[color]} rounded-full p-6 sm:p-8 border flex-shrink-0 flex flex-col gap-2`}
     >
-      <div className="flex flex-col items-center justify-center text-center">
-        <p className="text-xs sm:text-sm text-slate-700 font-medium">
-          {title}
-        </p>
-      </div>
+      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+        {message}
+      </p>
     </div>
   );
 }

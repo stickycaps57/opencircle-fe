@@ -9,7 +9,11 @@
   --color-placeholderbg: #29465b80;
   --color-athens_gray: #f0f2f5;
   --color-gainsboro: #dfdfdf;
-  --color-org-prof-bg: #CBB79959
+  --color-org-prof-bg: #CBB79959;
+  --color-goal-green: #EBFFE1;
+  --color-goal-gray: #FFFFFF;
+  --color-goal-pink: #FFE2E5;
+  --color-dashboard-sidebar: #E6E9EE;
 
   --radius-56: 56px;
 }

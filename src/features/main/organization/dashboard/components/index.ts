@@ -4,3 +4,4 @@ export { default as ActiveAndPastEventsStatistic } from "./ActiveAndPastEventsSt
 export { default as MemberInteractionStatistic } from "./MemberInteractionStatistic";
 export { default as EventInteractionStatistic } from "./EventInteractionStatistic";
 export { default as PostInteractionStatistic } from "./PostInteractionStatistic";
+export { default as GoalsSection } from "./GoalsSection";

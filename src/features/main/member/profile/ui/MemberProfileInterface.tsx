@@ -1,5 +1,5 @@
 import { UserProfileHeader } from "@src/shared/components/UserProfileHeader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PostComponent from "../components/PostComponent";
 import EventComponent from "../components/EventComponent";
 import { useAuthStore } from "@src/shared/store/auth";
@@ -14,6 +14,20 @@ type MemberProfileInterfaceProps = {
 
 export default function MemberProfileInterface({ accountUuid }: MemberProfileInterfaceProps) {
   const [activeTab, setActiveTab] = useState("post");
+
+  // Load tab from localStorage on mount
+  useEffect(() => {
+    const savedTab = localStorage.getItem("memberProfileActiveTab");
+    if (savedTab && ["post", "events", "calendar"].includes(savedTab)) {
+      setActiveTab(savedTab);
+    }
+  }, []);
+
+  // Save tab to localStorage whenever it changes
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    localStorage.setItem("memberProfileActiveTab", tabId);
+  };
   const { user } = useAuthStore();
   const effectiveUuid = accountUuid || user?.uuid || "";
 
@@ -65,7 +79,7 @@ export default function MemberProfileInterface({ accountUuid }: MemberProfileInt
             {profileTabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`relative py-2 sm:py-3 md:py-4 px-2 sm:px-3 text-responsive-sm font-bold text-center w-[140px] transition-colors duration-200 whitespace-nowrap ${
                   activeTab === tab.id
                     ? "text-primary"

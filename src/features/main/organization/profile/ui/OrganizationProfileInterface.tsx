@@ -25,7 +25,7 @@ export default function OrganizationProfileInterface({
   const [organizationData, setOrganizationData] = useState<Organization | null>(
     null
   );
-  
+
   const isUserMember = user ? isMember(user) : false;
 
   const { data: organizationDetails } = useOrganizationByIdQuery(
@@ -36,16 +36,30 @@ export default function OrganizationProfileInterface({
       isOrganizationVisitingOrganization
     } = useProfileRelationship(organizationDetails);
 
+  // Load tab from localStorage on mount
+  useEffect(() => {
+    const savedTab = localStorage.getItem("organizationProfileActiveTab");
+    if (savedTab && ["active", "events", "calendar"].includes(savedTab)) {
+      setActiveTab(savedTab);
+    }
+  }, []);
+
   useEffect(() => {
     if (isUserMember && organizationDetails) {
       setOrganizationData(organizationDetails);
     } else if (isOrganizationVisitingOrganization && organizationDetails){
       setOrganizationData(organizationDetails);
-    } 
+    }
     else if (!isUserMember && user && isOrganization(user)) {
       setOrganizationData(user);
     }
   }, [isUserMember, organizationDetails, organizationId, user, isOrganizationVisitingOrganization]);
+
+  // Save tab to localStorage whenever it changes
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    localStorage.setItem("organizationProfileActiveTab", tabId);
+  };
 
   const { getImageUrl } = useImageUrl();
 
@@ -114,7 +128,7 @@ export default function OrganizationProfileInterface({
             {profileTabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`relative py-2 sm:py-3 md:py-4 px-2 sm:px-3 text-responsive-sm font-bold text-center w-[140px] transition-colors duration-200 whitespace-nowrap ${
                   activeTab === tab.id
                     ? "text-primary"

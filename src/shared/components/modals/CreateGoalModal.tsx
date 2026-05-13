@@ -24,9 +24,10 @@ interface CreateGoalModalProps {
 
 const GOAL_TYPES = [
   { value: "member_growth", label: "Member Growth Goal" },
+  { value: "event_participation", label: "Event Participation Goal" },
   { value: "engagement", label: "Engagement Goal" },
-  { value: "event_attendance", label: "Event Attendance Goal" },
-  { value: "content_creation", label: "Content Creation Goal" },
+  { value: "announcement_activity", label: "Announcement Activity Goal" },
+  { value: "retention", label: "Retention Goal" },
 ];
 
 export function CreateGoalModal({

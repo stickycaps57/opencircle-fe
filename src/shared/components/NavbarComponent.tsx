@@ -55,7 +55,7 @@ export function Navbar({
 
   return (
     <nav
-      className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 ${
+      className={`w-full fixed top-0 left-0 z-50 shadow-lg transition-all duration-300 ${
         shouldBeTransparent ? "md:bg-transparent bg-white" : "bg-white"
       }`}
     >

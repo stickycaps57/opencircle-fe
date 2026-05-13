@@ -39,7 +39,7 @@ export default function GoalCard({
 
   return (
     <div
-      className={`${bgColorClasses[color]} rounded-full p-4 sm:p-6 flex gap-4 sm:gap-6 transition-shadow hover:shadow-md flex-1 items-center`}
+      className={`${bgColorClasses[color]} rounded-3xl shadow-lg p-4 sm:p-6 flex gap-4 sm:gap-6 transition-shadow hover:shadow-md flex-1 items-center`}
     >
       {/* Icon/Avatar */}
       <div
@@ -93,7 +93,7 @@ export default function GoalCard({
 
           {/* Progress Percentage */}
           <div className="flex-shrink-0 min-w-fit text-right">
-            <p className="text-xl sm:text-2xl font-bold text-slate-900">
+            <p className="text-xl sm:text-2xl text-slate-900">
               {progress}%
             </p>
           </div>

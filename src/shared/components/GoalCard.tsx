@@ -34,46 +34,46 @@ export default function GoalCard({
 
   return (
     <div
-      className={`${bgColorClasses[color]} rounded-3xl shadow-lg p-4 sm:p-6 flex gap-4 sm:gap-6 transition-shadow hover:shadow-md flex-1 items-center`}
+      className={`${bgColorClasses[color]} rounded-3xl shadow-lg p-3 sm:p-4 md:p-6 flex gap-3 sm:gap-4 md:gap-6 transition-shadow hover:shadow-md flex-1 items-center`}
     >
       {/* Icon/Avatar */}
-      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex-shrink-0 flex items-center justify-center">
+      <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex-shrink-0 flex items-center justify-center">
         <img src={goalCardIcon} alt="Goal" className="w-full h-full" />
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 flex flex-col justify-between py-2">
+      <div className="flex-1 min-w-0 flex flex-col justify-between py-1 sm:py-2">
         {/* Title Row with Action Buttons */}
         <div className="flex items-center justify-between gap-2 mb-1">
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 truncate">
+          <h3 className="text-xs sm:text-base md:text-lg lg:text-xl font-bold text-slate-900 truncate">
             {title}
           </h3>
-          <div className="flex-shrink-0 flex items-center gap-1">
+          <div className="flex-shrink-0 flex items-center gap-0.5 sm:gap-1">
             <button
               onClick={() => onEdit?.(id)}
-              className="p-1.5 hover:bg-black/10 rounded-lg transition-colors"
+              className="p-1 sm:p-1.5 hover:bg-black/10 rounded-lg transition-colors flex-shrink-0"
               title="Edit goal"
             >
-              <img src={editIcon} alt="Edit" className="w-5 h-5" />
+              <img src={editIcon} alt="Edit" className="w-3.5 sm:w-4 md:w-5 h-3.5 sm:h-4 md:h-5" />
             </button>
             <button
               onClick={() => onDelete?.(id)}
-              className="p-1.5 hover:bg-black/10 rounded-lg transition-colors"
+              className="p-1 sm:p-1.5 hover:bg-black/10 rounded-lg transition-colors flex-shrink-0"
               title="Delete goal"
             >
-              <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
+              <img src={deleteIcon} alt="Delete" className="w-3.5 sm:w-4 md:w-5 h-3.5 sm:h-4 md:h-5" />
             </button>
           </div>
         </div>
 
         {/* Type, Date, Progress Bar, Percentage - Same Row */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-wrap md:flex-nowrap">
           {/* Type & Date */}
-          <div className="flex-shrink-0 min-w-fit max-w-[150px]">
-            <p className="text-sm sm:text-base font-medium text-slate-700 truncate">
+          <div className="flex-shrink-0 min-w-fit max-w-[100px] sm:max-w-[150px]">
+            <p className="text-xs sm:text-sm md:text-base font-medium text-slate-700 truncate">
               {type}
             </p>
-            <p className="text-xs sm:text-sm text-slate-500 mt-0.5 truncate">
+            <p className="text-[10px] sm:text-xs md:text-sm text-slate-500 mt-0.5 truncate">
               {startDate} to {endDate}
             </p>
           </div>
@@ -81,12 +81,12 @@ export default function GoalCard({
           {/* Progress Bar - Center */}
           <ModernProgressBar
             progress={progress}
-            className="min-w-[80px] sm:min-w-[120px]"
+            className="min-w-[60px] sm:min-w-[80px] md:min-w-[120px]"
           />
 
           {/* Progress Percentage */}
           <div className="flex-shrink-0 min-w-fit text-right">
-            <p className="text-xl sm:text-2xl text-slate-900">
+            <p className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-slate-900">
               {progress}%
             </p>
           </div>

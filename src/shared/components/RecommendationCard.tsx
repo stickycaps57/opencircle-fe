@@ -21,9 +21,9 @@ export default function RecommendationCard({
 
   return (
     <div
-      className={`${bgColorClasses[color]} ${borderColorClasses[color]} rounded-3xl shadow-lg p-6 sm:p-8 border flex-shrink-0 flex flex-col gap-2 items-center`}
+      className={`${bgColorClasses[color]} ${borderColorClasses[color]} rounded-3xl shadow-lg p-3 sm:p-4 md:p-6 lg:p-8 border flex-shrink-0 flex flex-col gap-2 items-center`}
     >
-      <p className="text-xs text-slate-600 leading-relaxed">
+      <p className="text-[10px] sm:text-xs md:text-sm text-slate-600 leading-relaxed text-center">
         {message}
       </p>
     </div>

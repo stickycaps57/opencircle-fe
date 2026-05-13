@@ -222,37 +222,38 @@ export default function GoalsSection() {
 
   return (
     <div className="w-full min-h-screen bg-athens_gray py-4 sm:py-6 lg:py-8">
-      {/* Mobile Layout */}
+      {/* Mobile & Tablet Layout */}
       <div className="lg:hidden px-4 sm:px-6">
-        <div className="mb-6 flex flex-row items-center justify-start gap-3">
+        <div className="mb-6 flex flex-row items-center justify-start gap-2 sm:gap-3 flex-wrap">
           <h2 className="text-responsive-base font-bold text-primary">Goals</h2>
           <button
             onClick={handleOpenCreateGoalModal}
-            className="px-4 sm:px-5 py-2 bg-slate-700 text-white rounded-full font-medium text-sm sm:text-base hover:bg-slate-800 transition-colors inline-flex items-center gap-2"
+            className="px-3 sm:px-5 py-2 bg-slate-700 text-white rounded-full font-medium text-xs sm:text-base hover:bg-slate-800 transition-colors inline-flex items-center gap-1 sm:gap-2 flex-shrink-0"
           >
-            <img src={createGoalIcon} alt="Create" className="w-5 h-5" />
-            Create Goal
+            <img src={createGoalIcon} alt="Create" className="w-4 sm:w-5 h-4 sm:h-5" />
+            <span className="hidden sm:inline">Create Goal</span>
+            <span className="sm:hidden">Create</span>
           </button>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <button
               onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-              className="px-3 sm:px-4 py-2 bg-white text-slate-700 border border-gray-300 rounded-lg font-medium text-sm sm:text-base hover:border-gray-400 transition-colors inline-flex items-center gap-2"
+              className="px-2 sm:px-4 py-2 bg-white text-slate-700 border border-gray-300 rounded-lg font-medium text-xs sm:text-base hover:border-gray-400 transition-colors inline-flex items-center gap-1 sm:gap-2"
             >
               {typeof GOAL_FILTERS.find(f => f.id === goalFilter)?.icon === 'string' &&
               GOAL_FILTERS.find(f => f.id === goalFilter)!.icon.length > 2 ? (
                 <img
                   src={GOAL_FILTERS.find(f => f.id === goalFilter)?.icon as string}
                   alt={goalFilter}
-                  className="w-4 h-4"
+                  className="w-3 sm:w-4 h-3 sm:h-4"
                 />
               ) : (
-                <span>{GOAL_FILTERS.find(f => f.id === goalFilter)?.icon}</span>
+                <span className="text-xs sm:text-sm">{GOAL_FILTERS.find(f => f.id === goalFilter)?.icon}</span>
               )}
-              {GOAL_FILTERS.find(f => f.id === goalFilter)?.label}
-              <span className="text-slate-600">▼</span>
+              <span className="hidden sm:inline text-xs sm:text-base">{GOAL_FILTERS.find(f => f.id === goalFilter)?.label}</span>
+              <span className="text-slate-600 text-xs sm:text-sm">▼</span>
             </button>
             {isFilterDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-10 min-w-[150px]">
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-10 min-w-[120px] sm:min-w-[150px]">
                 {GOAL_FILTERS.map((filter) => (
                   <button
                     key={filter.id}
@@ -260,12 +261,12 @@ export default function GoalsSection() {
                       setGoalFilter(filter.id);
                       setIsFilterDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition-colors ${
+                    className={`w-full text-left px-3 sm:px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition-colors text-xs sm:text-sm ${
                       goalFilter === filter.id ? 'bg-blue-500 text-white' : 'text-slate-700'
                     }`}
                   >
                     {typeof filter.icon === 'string' && filter.icon.length > 2 ? (
-                      <img src={filter.icon} alt={filter.id} className="w-4 h-4" />
+                      <img src={filter.icon} alt={filter.id} className="w-3 sm:w-4 h-3 sm:h-4" />
                     ) : (
                       <span>{filter.icon}</span>
                     )}
@@ -277,20 +278,24 @@ export default function GoalsSection() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {goals.map((goal) => (
-            <GoalCard
-              key={goal.id}
-              id={goal.id}
-              title={goal.title}
-              type={goal.type}
-              progress={goal.progress}
-              startDate={goal.startDate}
-              endDate={goal.endDate}
-              color={goal.color}
-              onEdit={handleEditGoal}
-              onDelete={handleDeleteGoal}
-            />
+            <div key={goal.id} className="space-y-2 sm:space-y-3">
+              <GoalCard
+                id={goal.id}
+                title={goal.title}
+                type={goal.type}
+                progress={goal.progress}
+                startDate={goal.startDate}
+                endDate={goal.endDate}
+                color={goal.color}
+                onEdit={handleEditGoal}
+                onDelete={handleDeleteGoal}
+              />
+              {goal.hasRecommendation && (
+                <RecommendationCard color={goal.color} message={goal.recommendationMessage || ""} />
+              )}
+            </div>
           ))}
 
           {isLoading && (
@@ -304,7 +309,7 @@ export default function GoalsSection() {
 
           {goals.length === 0 && !isLoading && (
             <div className="text-center py-8">
-              <p className="text-slate-600 text-sm">No goals found.</p>
+              <p className="text-slate-600 text-xs sm:text-sm">No goals found.</p>
             </div>
           )}
 

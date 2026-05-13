@@ -67,9 +67,7 @@ function TwoFactorSetupContent() {
 
   const handleSubmitEnable = () => {
     bypassMutation.mutate({ bypass_status: true }, {
-      onSuccess: (response) => {
-        const msg = response?.data?.message || "Two-factor bypass updated";
-        console.log(msg);
+      onSuccess: () => {
         if (pendingLogin) {
           authStore.login(pendingLogin);
           navigate(loginType === "member" ? "/member-profile" : "/organization-profile");
@@ -80,9 +78,7 @@ function TwoFactorSetupContent() {
 
   const handleSubmitDisable = () => {
     bypassMutation.mutate({ bypass_status: true }, {
-      onSuccess: (response) => {
-        const msg = response?.data?.message || "Two-factor disabled";
-        console.log(msg);
+      onSuccess: () => {
         if (pendingLogin) {
           authStore.login(pendingLogin);
           navigate(loginType === "member" ? "/member-profile" : "/organization-profile");

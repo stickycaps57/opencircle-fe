@@ -63,8 +63,6 @@ export default function ActiveComponent({ accountUuid}: ActiveComponentProps) {
     }
   };
 
-  console.log("infigite data post", infinitePostsData)
-
   // Setup infinite scroll
   const { sentinelRef: loadMoreRef } = useInfiniteScroll({
     onLoadMore: handleFetchNextPage,

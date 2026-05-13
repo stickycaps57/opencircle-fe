@@ -169,7 +169,6 @@ export function UserProfileHeader({ profile }: UserProfileHeaderProps) {
 
   // const email = getEmail();
   const username = getUsername();
-  console.log("profile", profile)
   const membershipStatus = profile?.user_membership_status;
   const orgId = profile?.id;
 

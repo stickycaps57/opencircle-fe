@@ -15,8 +15,6 @@ export default function PostInteractionStatistic() {
     end_date: convertToUTC(endDate),
   });
 
-  console.log("dataaa", data);
-
   const categories = useMemo(() => {
     const items = data?.post_analytics ?? [];
     const sorted = [...items].sort((a, b) => new Date(a.post_created_date).getTime() - new Date(b.post_created_date).getTime());

@@ -62,7 +62,7 @@ export const CustomSelectField = ({
     <div className={`flex items-center gap-2 ${className}`}>
       <div className="relative flex-1" ref={selectRef}>
         <div
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent bg-white cursor-pointer text-responsive-sm h-[48px] flex flex-col justify-start"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent bg-white cursor-pointer text-responsive-sm h-[64px] flex flex-col justify-start"
           onClick={handleToggle}
         >
           <div className="text-placeholderbg text-xs leading-tight">

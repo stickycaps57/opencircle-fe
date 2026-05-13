@@ -1,6 +1,6 @@
 export const convertToUTC = (dateTimeString: string): string => {
   const date = new Date(dateTimeString);
-  return date.toISOString();
+  return date.toISOString().slice(0, -1);
 };
 
 export const getLocalDateTimeString = (date: Date): string => {

@@ -44,7 +44,6 @@ export const EventFormModal = ({
   const updateEventMutation = useUpdateEvent();
   const { getImageUrl } = useImageUrl();
   const locationInitialized = useRef(false);
-
   const [prevMode, setPrevMode] = useState<EventFormMode>(mode);
 
   const {

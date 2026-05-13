@@ -4,7 +4,7 @@ import { DEFAULT_GRAPH_COLORS } from "@src/shared/enums/graphColors";
 import { RSVP_LABELS, buildRsvpSeries } from "@src/shared/enums/rsvp";
 import ActiveAndPastEventsStatistic from "./ActiveAndPastEventsStatistic";
 import { useState } from "react";
-import { convertToUTC, getLocalDateTimeString } from "@src/shared/utils";
+import { convertToUTC } from "@src/shared/utils";
 
 export default function EventsStatistic() {
   const now = new Date();
@@ -14,8 +14,6 @@ export default function EventsStatistic() {
 
   const [startDate, setStartDate] = useState(`${oneWeekAgo}T00:00`);
   const [endDate, setEndDate] = useState(`${today}T23:59`);
-
-  const todayMin = getLocalDateTimeString(now);
 
   const { data } = useEventsSummary({
     start_date: convertToUTC(startDate),
@@ -91,7 +89,6 @@ export default function EventsStatistic() {
                     type="datetime-local"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    min={todayMin}
                     max={endDate || undefined}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-responsive-xs text-primary bg-white"
                   />
@@ -104,7 +101,7 @@ export default function EventsStatistic() {
                     type="datetime-local"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    min={todayMin}
+                    min={startDate || undefined}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-responsive-xs text-primary bg-white"
                   />
                 </div>

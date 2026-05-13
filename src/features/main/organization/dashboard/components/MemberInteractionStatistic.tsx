@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useCommentAnalyticsSummary } from "@src/features/main/organization/dashboard/model/dashboard.query";
 import { DEFAULT_GRAPH_COLORS } from "@src/shared/enums/graphColors";
-import { convertToUTC, getLocalDateTimeString } from "@src/shared/utils";
+import { convertToUTC } from "@src/shared/utils";
 
 export default function MemberInteractionStatistic() {
   const now = new Date();
@@ -12,8 +12,6 @@ export default function MemberInteractionStatistic() {
 
   const [startDate, setStartDate] = useState(`${oneWeekAgo}T00:00`);
   const [endDate, setEndDate] = useState(`${today}T23:59`);
-
-  const todayMin = getLocalDateTimeString(now);
 
   const { data } = useCommentAnalyticsSummary({
     start_date: convertToUTC(startDate),
@@ -69,7 +67,6 @@ export default function MemberInteractionStatistic() {
               type="datetime-local"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              min={todayMin}
               max={endDate || undefined}
               className="border border-gray-300 rounded-lg px-3 py-2 text-responsive-xs text-primary bg-white"
             />
@@ -80,7 +77,7 @@ export default function MemberInteractionStatistic() {
               type="datetime-local"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              min={todayMin}
+              min={startDate || undefined}
               className="border border-gray-300 rounded-lg px-3 py-2 text-responsive-xs text-primary bg-white"
             />
           </div>

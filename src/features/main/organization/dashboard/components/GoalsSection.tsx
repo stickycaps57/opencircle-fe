@@ -66,7 +66,7 @@ const getGoalColor = (
     // If target_reached is false, goal is behind on expectations at midpoint
     if (targetReached === false) return "pink";
     // If target_reached is true, goal is on track at midpoint
-    return "gray";
+    return "green";
   }
 
   return "gray";

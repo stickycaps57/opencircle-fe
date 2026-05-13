@@ -2,15 +2,13 @@ import { useMemo, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { usePostCommentAnalyticsSummary } from "@src/features/main/organization/dashboard/model/dashboard.query";
 import { DEFAULT_GRAPH_COLORS } from "@src/shared/enums/graphColors";
-import { convertToUTC, getLocalDateTimeString } from "@src/shared/utils";
+import { convertToUTC } from "@src/shared/utils";
 
 export default function PostInteractionStatistic() {
   const now = new Date();
   const today = now.toISOString().split("T")[0];
   const [startDate, setStartDate] = useState(`${today}T00:00`);
   const [endDate, setEndDate] = useState(`${today}T23:59`);
-
-  const todayMin = getLocalDateTimeString(now);
 
   const { data } = usePostCommentAnalyticsSummary({
     start_date: convertToUTC(startDate),
@@ -71,7 +69,6 @@ export default function PostInteractionStatistic() {
                   setStartDate(`${val.split("T")[0]}T00:00:00`);
                 }
               }}
-              min={todayMin}
               className="border border-gray-300 rounded-lg px-3 py-2 text-responsive-xs text-primary bg-white"
             />
           </div>

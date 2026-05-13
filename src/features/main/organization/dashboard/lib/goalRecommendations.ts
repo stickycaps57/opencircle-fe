@@ -28,62 +28,62 @@ export const GOAL_RECOMMENDATIONS: Record<
 > = {
   member_growth: {
     positive: {
-      title: "Great work! 🎉",
+      title: "Great job! 🎉",
       message:
-        "Your community is growing strong. Keep up the momentum by continuing your outreach efforts and welcoming new members with engaging onboarding content to retain them long-term.",
+        "Keep the momentum going by maintaining your outreach efforts and welcoming new members effectively.",
     },
     negative: {
       title: "Growth Below Target",
       message:
-        "Growth is below target. Consider revisiting your recruitment strategies, such as promoting your community on more platforms, running referral campaigns, or collaborating with other groups to attract new members.",
+        "Growth is below target. Try promoting your community on more platforms or running referral campaigns to attract new members.",
     },
   },
   event_participation: {
     positive: {
-      title: "Excellent Turnout! 🚀",
+      title: "Excellent turnout! 🚀",
       message:
-        "Your events are attracting strong interest. Consider expanding event variety or frequency to maintain this engagement level and keep participants coming back.",
+        "Consider expanding event variety or frequency to keep participants engaged and coming back.",
     },
     negative: {
       title: "Participation Below Target",
       message:
-        "Participation fell short this month. Try improving event visibility through timely announcements, adjusting event schedules to better fit your members' availability, or introducing more appealing event topics.",
+        "Participation fell short. Improve event visibility and adjust schedules to better fit your members' availability.",
     },
   },
   engagement: {
     positive: {
-      title: "Highly Engaged! 💪",
+      title: "Your community is actively engaging! 💪",
       message:
-        "Your community is actively engaging! This shows members find your content valuable. Keep posting relevant and interactive content to sustain and grow this interaction rate.",
+        "Keep posting relevant and interactive content to sustain this growth.",
     },
     negative: {
       title: "Engagement Below Expected",
       message:
-        "Engagement is lower than expected. Encourage more interaction by posting events, questions, and discussion topics that prompt responses. Recognizing active members can also motivate others to participate.",
+        "Engagement is low. Post events or discussion topics to encourage more interactions from your members.",
     },
   },
   announcement_activity: {
     positive: {
-      title: "Consistent Communication! ✅",
+      title: "Well done on staying consistent! ✅",
       message:
-        "Well done on staying consistent with your announcements! Regular communication keeps your community informed and engaged. Maintain this habit to build trust and reliability.",
+        "Keep up the regular communication to maintain trust and community awareness.",
     },
     negative: {
-      title: "Announcement Frequency Low",
+      title: "Posting Frequency Low",
       message:
-        "Announcement frequency was below the set goal. Establish a consistent posting schedule and plan content in advance to ensure your community stays informed and connected throughout the month.",
+        "Posting frequency was low. Plan your content in advance and set a consistent schedule to stay on track.",
     },
   },
   retention: {
     positive: {
-      title: "Outstanding Retention! ⭐",
+      title: "Outstanding retention! ⭐",
       message:
-        "Outstanding retention! Your members are satisfied and committed to your community. Continue fostering a welcoming and valuable environment to keep this rate low.",
+        "Continue fostering a welcoming environment to keep your members satisfied and committed.",
     },
     negative: {
-      title: "Higher Attrition Rate",
+      title: "Too Many Members Leaving",
       message:
-        "More members are leaving than targeted. Take time to understand why by gathering feedback or monitoring community activity. Focus on improving member experience, addressing concerns, and increasing value within the community.",
+        "Too many members are leaving. Gather feedback, address concerns, and focus on improving the overall member experience.",
     },
   },
 };

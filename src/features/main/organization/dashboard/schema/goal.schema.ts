@@ -9,6 +9,22 @@ export const createGoalSchema = z.object({
   ),
   startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().min(1, "End date is required"),
+}).superRefine((data, ctx) => {
+  const startDate = new Date(data.startDate);
+  const endDate = new Date(data.endDate);
+
+  if (startDate >= endDate) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Start date must be before end date",
+      path: ["startDate"],
+    });
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "End date must be after start date",
+      path: ["endDate"],
+    });
+  }
 });
 
 export const editGoalSchema = createGoalSchema;

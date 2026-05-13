@@ -1,6 +1,5 @@
 import axiosInstance from "@src/shared/api/axios";
 import type { GoalsResponse, Goal } from "../schema/goal.type";
-import type { CreateGoalFormData } from "../schema/goal.schema";
 
 export interface GoalQueryParams {
   organizationId: number;

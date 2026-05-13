@@ -1,6 +1,7 @@
 import ModernProgressBar from "./ProgressBar";
 import deleteIcon from "@src/assets/shared/delete_icon.svg";
 import editIcon from "@src/assets/shared/edit_icon.svg";
+import goalCardIcon from "@src/assets/shared/goal_card_icon.png";
 
 interface GoalCardProps {
   id: number;
@@ -31,21 +32,13 @@ export default function GoalCard({
     pink: "bg-goal-pink",
   };
 
-  const iconBgClasses = {
-    gray: "bg-slate-700",
-    green: "bg-green-700",
-    pink: "bg-pink-700",
-  };
-
   return (
     <div
       className={`${bgColorClasses[color]} rounded-3xl shadow-lg p-4 sm:p-6 flex gap-4 sm:gap-6 transition-shadow hover:shadow-md flex-1 items-center`}
     >
       {/* Icon/Avatar */}
-      <div
-        className={`${iconBgClasses[color]} w-14 h-14 sm:w-16 sm:h-16 rounded-full flex-shrink-0 flex items-center justify-center`}
-      >
-        <span className="text-2xl sm:text-3xl">🎯</span>
+      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex-shrink-0 flex items-center justify-center">
+        <img src={goalCardIcon} alt="Goal" className="w-full h-full" />
       </div>
 
       {/* Content */}

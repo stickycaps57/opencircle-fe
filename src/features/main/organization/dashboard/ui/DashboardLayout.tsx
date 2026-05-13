@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import DashboardInterface from "./DashboardInterface";
 import GoalsSection from "../components/GoalsSection";
+import analyticsIcon from "@src/assets/shared/analytics_icon.png";
+import goalsIcon from "@src/assets/shared/goals_icon.png";
 
 type SectionType = "analytics" | "goals";
 
@@ -28,8 +30,8 @@ export default function DashboardLayout() {
   };
 
   const sections: Section[] = [
-    { id: "analytics", label: "Overall Analytics", icon: "📊" },
-    { id: "goals", label: "Goals", icon: "🎯" },
+    { id: "analytics", label: "Overall Analytics", icon: analyticsIcon },
+    { id: "goals", label: "Goals", icon: goalsIcon },
   ];
 
   return (
@@ -42,12 +44,13 @@ export default function DashboardLayout() {
               <button
                 key={section.id}
                 onClick={() => handleSectionChange(section.id)}
-                className={`flex-1 px-3 sm:px-4 py-3 font-medium text-xs sm:text-sm transition-colors relative ${
+                className={`flex-1 px-3 sm:px-4 py-3 font-medium text-xs sm:text-sm transition-colors relative flex items-center justify-center gap-2 ${
                   activeSection === section.id
                     ? "text-slate-900"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
+                <img src={section.icon} alt={section.label} className="w-5 h-5" />
                 {section.label}
                 {activeSection === section.id && (
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600" />
@@ -73,7 +76,7 @@ export default function DashboardLayout() {
                     : "text-slate-700 hover:bg-gray-100"
                 }`}
               >
-                <span className="text-lg ml-4">{section.icon}</span>
+                <img src={section.icon} alt={section.label} className="w-6 h-6 ml-4" />
                 {section.label}
               </button>
             ))}

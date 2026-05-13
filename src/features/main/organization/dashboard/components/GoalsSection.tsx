@@ -10,6 +10,7 @@ import { useAuthStore } from "@src/shared/store";
 import { useInfiniteScroll, useConfirmationModal } from "@src/shared/hooks";
 import { GOAL_RECOMMENDATIONS } from "../lib/goalRecommendations";
 import { useDeleteGoal } from "../model/goal.mutation";
+import createGoalIcon from "@src/assets/shared/create_goal_icon.png";
 
 interface TransformedGoal {
   id: number;
@@ -109,6 +110,7 @@ export default function GoalsSection() {
   const [isCreateGoalModalOpen, setIsCreateGoalModalOpen] = useState(false);
   const [goalFormMode, setGoalFormMode] = useState<"create" | "edit">("create");
   const [selectedGoalId, setSelectedGoalId] = useState<number | null>(null);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const { isConfirmModalOpen, modalConfig, openConfirmationModal, closeConfirmationModal } = useConfirmationModal();
   const deleteGoalMutation = useDeleteGoal();
 
@@ -228,24 +230,50 @@ export default function GoalsSection() {
             onClick={handleOpenCreateGoalModal}
             className="px-4 sm:px-5 py-2 bg-slate-700 text-white rounded-full font-medium text-sm sm:text-base hover:bg-slate-800 transition-colors inline-flex items-center gap-2"
           >
-            <span>⊕</span>
+            <img src={createGoalIcon} alt="Create" className="w-5 h-5" />
             Create Goal
           </button>
           <div className="relative">
-            <select
-              value={goalFilter}
-              onChange={(e) => setGoalFilter(e.target.value as GoalFilterType)}
-              className="px-3 sm:px-4 py-2 bg-white text-slate-700 border border-gray-300 rounded-lg font-medium text-sm sm:text-base hover:border-gray-400 transition-colors appearance-none cursor-pointer pr-8"
+            <button
+              onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+              className="px-3 sm:px-4 py-2 bg-white text-slate-700 border border-gray-300 rounded-lg font-medium text-sm sm:text-base hover:border-gray-400 transition-colors inline-flex items-center gap-2"
             >
-              {GOAL_FILTERS.map((filter) => (
-                <option key={filter.id} value={filter.id}>
-                  {filter.icon} {filter.label}
-                </option>
-              ))}
-            </select>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-600">
-              ▼
-            </span>
+              {typeof GOAL_FILTERS.find(f => f.id === goalFilter)?.icon === 'string' &&
+              GOAL_FILTERS.find(f => f.id === goalFilter)!.icon.length > 2 ? (
+                <img
+                  src={GOAL_FILTERS.find(f => f.id === goalFilter)?.icon as string}
+                  alt={goalFilter}
+                  className="w-4 h-4"
+                />
+              ) : (
+                <span>{GOAL_FILTERS.find(f => f.id === goalFilter)?.icon}</span>
+              )}
+              {GOAL_FILTERS.find(f => f.id === goalFilter)?.label}
+              <span className="text-slate-600">▼</span>
+            </button>
+            {isFilterDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-10 min-w-[150px]">
+                {GOAL_FILTERS.map((filter) => (
+                  <button
+                    key={filter.id}
+                    onClick={() => {
+                      setGoalFilter(filter.id);
+                      setIsFilterDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition-colors ${
+                      goalFilter === filter.id ? 'bg-blue-500 text-white' : 'text-slate-700'
+                    }`}
+                  >
+                    {typeof filter.icon === 'string' && filter.icon.length > 2 ? (
+                      <img src={filter.icon} alt={filter.id} className="w-4 h-4" />
+                    ) : (
+                      <span>{filter.icon}</span>
+                    )}
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -299,24 +327,50 @@ export default function GoalsSection() {
             onClick={handleOpenCreateGoalModal}
             className="px-5 py-2 bg-slate-700 text-white rounded-full font-medium text-base hover:bg-slate-800 transition-colors inline-flex items-center gap-2"
           >
-            <span>⊕</span>
+            <img src={createGoalIcon} alt="Create" className="w-5 h-5" />
             Create Goal
           </button>
           <div className="relative">
-            <select
-              value={goalFilter}
-              onChange={(e) => setGoalFilter(e.target.value as GoalFilterType)}
-              className="px-6 py-2 bg-white text-slate-700 border border-gray-300 rounded-full font-medium text-base hover:border-gray-400 transition-colors appearance-none cursor-pointer pr-8"
+            <button
+              onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+              className="px-6 py-2 bg-white text-slate-700 border border-gray-300 rounded-full font-medium text-base hover:border-gray-400 transition-colors inline-flex items-center gap-2"
             >
-              {GOAL_FILTERS.map((filter) => (
-                <option key={filter.id} value={filter.id}>
-                  {filter.icon} {filter.label}
-                </option>
-              ))}
-            </select>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-600">
-              ▼
-            </span>
+              {typeof GOAL_FILTERS.find(f => f.id === goalFilter)?.icon === 'string' &&
+              GOAL_FILTERS.find(f => f.id === goalFilter)!.icon.length > 2 ? (
+                <img
+                  src={GOAL_FILTERS.find(f => f.id === goalFilter)?.icon as string}
+                  alt={goalFilter}
+                  className="w-5 h-5"
+                />
+              ) : (
+                <span>{GOAL_FILTERS.find(f => f.id === goalFilter)?.icon}</span>
+              )}
+              {GOAL_FILTERS.find(f => f.id === goalFilter)?.label}
+              <span className="text-slate-600">▼</span>
+            </button>
+            {isFilterDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-10 min-w-[180px]">
+                {GOAL_FILTERS.map((filter) => (
+                  <button
+                    key={filter.id}
+                    onClick={() => {
+                      setGoalFilter(filter.id);
+                      setIsFilterDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition-colors ${
+                      goalFilter === filter.id ? 'bg-blue-500 text-white' : 'text-slate-700'
+                    }`}
+                  >
+                    {typeof filter.icon === 'string' && filter.icon.length > 2 ? (
+                      <img src={filter.icon} alt={filter.id} className="w-5 h-5" />
+                    ) : (
+                      <span>{filter.icon}</span>
+                    )}
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

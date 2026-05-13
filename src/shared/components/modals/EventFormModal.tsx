@@ -44,6 +44,7 @@ export const EventFormModal = ({
   const updateEventMutation = useUpdateEvent();
   const { getImageUrl } = useImageUrl();
   const locationInitialized = useRef(false);
+  const eventDataLoadedRef = useRef(false);
   const [prevMode, setPrevMode] = useState<EventFormMode>(mode);
 
   const {
@@ -137,6 +138,7 @@ export const EventFormModal = ({
   useEffect(() => {
     if (!isOpen) {
       resetForm();
+      eventDataLoadedRef.current = false;
       return;
     }
 
@@ -144,6 +146,12 @@ export const EventFormModal = ({
     if (prevMode === "edit" && mode === "create") {
       resetForm();
       locationInitialized.current = false;
+      eventDataLoadedRef.current = false;
+    }
+
+    // Reset data loaded flag when opening modal in edit mode so form can be repopulated
+    if (mode === "edit") {
+      eventDataLoadedRef.current = false;
     }
 
     // Update previous mode
@@ -152,7 +160,7 @@ export const EventFormModal = ({
 
   // Populate form with event data when in edit mode
   useEffect(() => {
-    if (mode === "edit" && eventData && !isEventLoading) {
+    if (mode === "edit" && eventData && !isEventLoading && !eventDataLoadedRef.current) {
       // Set basic form fields
       setValue("title", eventData.title);
       setValue("event_date", eventData.event_date);
@@ -176,8 +184,6 @@ export const EventFormModal = ({
         setValue("province", eventData.address.province);
         setValue("city", eventData.address.city || "");
         setValue("barangay", eventData.address.barangay || "");
-      } else {
-        console.error("Event address is undefined:", eventData);
       }
 
       // Set image preview if available
@@ -191,9 +197,9 @@ export const EventFormModal = ({
 
       // Mark that we need to initialize location selectors
       locationInitialized.current = false;
+      eventDataLoadedRef.current = true;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventData, isEventLoading]);
+  }, [mode, eventData, isEventLoading, isOpen, setValue, getImageUrl]);
 
   // Memoize location codes to prevent unnecessary re-renders
   const locationCodes = useMemo(() => {

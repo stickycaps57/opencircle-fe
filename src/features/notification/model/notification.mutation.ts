@@ -10,6 +10,10 @@ export const useMarkAllNotificationsAsRead = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.NOTIFICATIONS] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.NOTIFICATIONS_UNREAD_COUNT] });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
       showSuccessToast("All notifications marked as read");
     },
     onError: (error) => {
@@ -26,6 +30,10 @@ export const useMarkNotificationAsRead = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.NOTIFICATIONS] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.NOTIFICATIONS_UNREAD_COUNT] });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
     },
     onError: (error) => {
       console.error("Failed to mark notification as read:", error);
@@ -41,6 +49,10 @@ export const useDeleteNotification = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.NOTIFICATIONS] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.NOTIFICATIONS_UNREAD_COUNT] });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
       showSuccessToast("Notification deleted");
     },
     onError: (error) => {

@@ -21,6 +21,11 @@ export const useShareContent = () => {
             queryKey: [QUERY_KEYS.CONTENT_SHARES],
         });
 
+        queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+            exact: false,
+        });
+
       showSuccessToast(data.message);
     },
     onError: (error: unknown) => {

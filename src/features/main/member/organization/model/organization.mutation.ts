@@ -50,7 +50,12 @@ export const useLeaveOrganization = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.USER_SHARES],
       });
-      
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
+
       showSuccessToast("Successfully left");
     },
     onError: (error) => {

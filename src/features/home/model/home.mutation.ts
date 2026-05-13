@@ -50,6 +50,10 @@ export const useJoinOrganization = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.USER_SHARES],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
       showSuccessToast("Successfully requested to join");
     },
     onError: (error: unknown) => {
@@ -83,6 +87,10 @@ export const useRsvpEvent = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.ALL_SHARES_WITH_COMMENTS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
       showSuccessToast("Successfully reserved");
     },
     onError: (error: unknown) => {
@@ -115,6 +123,10 @@ export const useDeleteRsvp = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.ALL_SHARES_WITH_COMMENTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
       });
       showSuccessToast("Reservation cancelled");
     },

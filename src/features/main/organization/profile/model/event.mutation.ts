@@ -26,6 +26,10 @@ export const useCreateEvent = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.ORGANIZATION_ACTIVE_EVENTS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
       showSuccessToast("Successfully created");
     },
     onError: (error) => {
@@ -47,6 +51,10 @@ export const useDeleteEvent = () => {
 
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.RANDOM_EVENTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
       });
       showSuccessToast("Successfully deleted");
     },
@@ -72,6 +80,10 @@ export const useUpdateEvent = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.EVENTS, variables.eventId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
       });
       showSuccessToast("Successfully updated");
     },

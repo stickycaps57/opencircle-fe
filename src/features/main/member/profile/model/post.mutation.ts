@@ -18,6 +18,10 @@ export const useCreatePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.MEMBER_POSTS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
       showSuccessToast("Successfully created");
     },
     onError: (error) => {
@@ -42,6 +46,10 @@ export const useUpdatePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.POST, variables.postId],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
       showSuccessToast("Successfully updated");
     },
     onError: (error) => {
@@ -58,6 +66,10 @@ export const useDeletePost = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.MEMBER_POSTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
       });
       showSuccessToast("Successfully deleted");
     },

@@ -26,6 +26,11 @@ export const usePostComment = () => {
         queryKey: [QUERY_KEYS.POST_COMMENTS],
       });
 
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
+
       if (isPostComment) {
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.MEMBER_POSTS],
@@ -113,7 +118,12 @@ export const useDeleteComment = () => {
         queryKey: [QUERY_KEYS.CALENDAR_EVENTS],
         exact: false,
       });
-      
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
+
       showSuccessToast("Comment deleted");
     },
     onError: (error) => {
@@ -170,6 +180,11 @@ export const useEditComment = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.ORGANIZATION_CALENDAR_EVENTS],
+        exact: false,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
         exact: false,
       });
       queryClient.invalidateQueries({

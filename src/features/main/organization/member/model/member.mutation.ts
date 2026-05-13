@@ -27,7 +27,12 @@ export const useUpdateMemberRequestStatus = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.MEMBER],
       });
-      
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ORGANIZATION_GOALS],
+        exact: false,
+      });
+
       const message = variables.status === "approved" ? "Successfully approved" : "Successfully rejected";
       showSuccessToast(message);
     },

@@ -23,6 +23,8 @@ interface TransformedGoal {
   hasRecommendation?: boolean;
   target_reached: boolean | null;
   recommendationMessage?: string;
+  currentValue: number;
+  targetValue: number;
 }
 
 const formatDate = (dateString: string): string => {
@@ -160,6 +162,10 @@ export default function GoalsSection() {
           }
         }
 
+        const currentValue = Math.round(
+          (goal.progress.progress_percentage / 100) * goal.target_value
+        );
+
         return {
           ...goal,
           color: getGoalColor(goal.status, goal.target_reached),
@@ -170,6 +176,8 @@ export default function GoalsSection() {
           progress: goal.progress.progress_percentage,
           title: goal.title,
           recommendationMessage,
+          currentValue,
+          targetValue: goal.target_value,
         };
       });
       setGoals(transformedGoals);
@@ -289,6 +297,8 @@ export default function GoalsSection() {
                 startDate={goal.startDate}
                 endDate={goal.endDate}
                 color={goal.color}
+                currentValue={goal.currentValue}
+                targetValue={goal.targetValue}
                 onEdit={handleEditGoal}
                 onDelete={handleDeleteGoal}
               />
@@ -392,6 +402,8 @@ export default function GoalsSection() {
                   startDate={goal.startDate}
                   endDate={goal.endDate}
                   color={goal.color}
+                  currentValue={goal.currentValue}
+                  targetValue={goal.targetValue}
                   onEdit={handleEditGoal}
                   onDelete={handleDeleteGoal}
                 />

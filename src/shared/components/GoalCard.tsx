@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ModernProgressBar from "./ProgressBar";
 import deleteIcon from "@src/assets/shared/delete_icon.svg";
 import editIcon from "@src/assets/shared/edit_icon.svg";
@@ -11,6 +12,8 @@ interface GoalCardProps {
   startDate: string;
   endDate: string;
   color: "gray" | "green" | "pink";
+  currentValue?: number;
+  targetValue?: number;
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
 }
@@ -23,9 +26,13 @@ export default function GoalCard({
   startDate,
   endDate,
   color,
+  currentValue,
+  targetValue,
   onEdit,
   onDelete,
 }: GoalCardProps) {
+  const [isCardHovered, setIsCardHovered] = useState(false);
+
   const bgColorClasses = {
     gray: "bg-goal-gray",
     green: "bg-goal-green",
@@ -35,6 +42,8 @@ export default function GoalCard({
   return (
     <div
       className={`${bgColorClasses[color]} rounded-3xl shadow-lg p-3 sm:p-4 md:p-6 flex gap-3 sm:gap-4 md:gap-6 transition-shadow hover:shadow-md flex-1 items-center`}
+      onMouseEnter={() => setIsCardHovered(true)}
+      onMouseLeave={() => setIsCardHovered(false)}
     >
       {/* Icon/Avatar */}
       <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex-shrink-0 flex items-center justify-center">
@@ -81,6 +90,9 @@ export default function GoalCard({
           {/* Progress Bar - Center */}
           <ModernProgressBar
             progress={progress}
+            currentValue={currentValue}
+            targetValue={targetValue}
+            isCardHovered={isCardHovered}
             className="min-w-[60px] sm:min-w-[80px] md:min-w-[120px]"
           />
 
